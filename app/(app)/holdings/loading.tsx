@@ -25,7 +25,7 @@ export default function HoldingsLoading() {
         {/* Header */}
         <div className="border-b border-border bg-surface px-4 py-2.5 flex gap-6">
           {[80, 72, 48, 72, 64, 72, 64, 48, 40].map((w, i) => (
-            <Shimmer key={i} className="h-3" style={{ width: w }} />
+            <Shimmer key={i} className={`h-3 w-[${w}px]`} />
           ))}
         </div>
         {/* Rows */}
