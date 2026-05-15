@@ -24,9 +24,6 @@ export default async function LoginPage() {
 
         <LoginForm />
 
-        <p className="text-center text-xs text-fg-mute">
-          Only your registered email can sign in.
-        </p>
       </div>
     </div>
   )
