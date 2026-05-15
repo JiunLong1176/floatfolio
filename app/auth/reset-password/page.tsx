@@ -1,16 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Lock, Loader2 } from 'lucide-react'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
+  const [ready, setReady] = useState(false)
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get('code')
+    if (!code) {
+      setReady(true)
+      return
+    }
+    const supabase = createClient()
+    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      if (error) setError(error.message)
+      // Remove code from URL without a page reload
+      window.history.replaceState({}, '', '/auth/reset-password')
+      setReady(true)
+    })
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -45,53 +61,59 @@ export default function ResetPasswordPage() {
           <p className="text-fg-dim text-sm">Set a new password</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-surface p-6 space-y-4">
-          <div className="space-y-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-fg-dim">New password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-fg-mute" />
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-md bg-surface-2 border border-border text-sm text-foreground placeholder:text-fg-mute focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
+        {!ready ? (
+          <div className="flex justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-fg-dim" />
           </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="confirm" className="text-sm font-medium text-fg-dim">Confirm password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-fg-mute" />
-              <input
-                id="confirm"
-                type="password"
-                required
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-2.5 rounded-md bg-surface-2 border border-border text-sm text-foreground placeholder:text-fg-mute focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+        ) : (
+          <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-surface p-6 space-y-4">
+            <div className="space-y-1.5">
+              <label htmlFor="password" className="text-sm font-medium text-fg-dim">New password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-fg-mute" />
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-md bg-surface-2 border border-border text-sm text-foreground placeholder:text-fg-mute focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
             </div>
-          </div>
 
-          {error && <p className="text-xs text-loss">{error}</p>}
+            <div className="space-y-1.5">
+              <label htmlFor="confirm" className="text-sm font-medium text-fg-dim">Confirm password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-fg-mute" />
+                <input
+                  id="confirm"
+                  type="password"
+                  required
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-md bg-surface-2 border border-border text-sm text-foreground placeholder:text-fg-mute focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading || !password || !confirm}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Updating…</>
-            ) : (
-              'Update password'
-            )}
-          </button>
-        </form>
+            {error && <p className="text-xs text-loss">{error}</p>}
+
+            <button
+              type="submit"
+              disabled={loading || !password || !confirm}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Updating…</>
+              ) : (
+                'Update password'
+              )}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )
