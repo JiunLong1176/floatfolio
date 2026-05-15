@@ -14,23 +14,20 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const supabase = createClient()
-
-    // PKCE flow: exchange ?code= for a session
     const code = new URLSearchParams(window.location.search).get('code')
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) setError(error.message)
-        else setReady(true)
-        window.history.replaceState({}, '', '/auth/reset-password')
-      })
+    if (!code) {
+      setError('No reset code found. Please request a new reset link.')
       return
     }
 
-    // Implicit flow: session was set by RecoveryRedirect on the login page
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true)
-      else setError('No valid session. Please request a new reset link.')
+    const supabase = createClient()
+    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      if (error) {
+        setError(error.message)
+      } else {
+        window.history.replaceState({}, '', '/auth/reset-password')
+        setReady(true)
+      }
     })
   }, [])
 
@@ -71,7 +68,7 @@ export default function ResetPasswordPage() {
           <div className="flex justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-fg-dim" />
           </div>
-        ) : error && !ready ? (
+        ) : error ? (
           <div className="rounded-lg border border-border bg-surface p-6 text-center space-y-3">
             <p className="text-sm text-loss">{error}</p>
           </div>
