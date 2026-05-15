@@ -16,22 +16,22 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     const supabase = createClient()
 
-    // Implicit flow: SDK auto-reads #access_token from hash and fires PASSWORD_RECOVERY
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') setReady(true)
-    })
-
-    // PKCE flow fallback: exchange ?code= for a session
+    // PKCE flow: exchange ?code= for a session
     const code = new URLSearchParams(window.location.search).get('code')
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (error) setError(error.message)
+        else setReady(true)
         window.history.replaceState({}, '', '/auth/reset-password')
-        setReady(true)
       })
+      return
     }
 
-    return () => subscription.unsubscribe()
+    // Implicit flow: session was set by RecoveryRedirect on the login page
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true)
+      else setError('No valid session. Please request a new reset link.')
+    })
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
@@ -67,9 +67,13 @@ export default function ResetPasswordPage() {
           <p className="text-fg-dim text-sm">Set a new password</p>
         </div>
 
-        {!ready ? (
+        {!ready && !error ? (
           <div className="flex justify-center">
             <Loader2 className="h-6 w-6 animate-spin text-fg-dim" />
+          </div>
+        ) : error && !ready ? (
+          <div className="rounded-lg border border-border bg-surface p-6 text-center space-y-3">
+            <p className="text-sm text-loss">{error}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-surface p-6 space-y-4">
