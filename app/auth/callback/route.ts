@@ -6,6 +6,7 @@ import type { NextRequest } from 'next/server'
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
+  const next = searchParams.get('next') ?? '/dashboard'
 
   // Password reset: let the client exchange the code (PKCE verifier is in browser localStorage)
   if (next === '/auth/reset-password' && code) {
@@ -31,6 +32,5 @@ export async function GET(request: NextRequest) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  const next = searchParams.get('next') ?? '/dashboard'
   return NextResponse.redirect(`${origin}${next}`)
 }
