@@ -15,28 +15,23 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     const supabase = createClient()
-    const code = new URLSearchParams(window.location.search).get('code')
-    const hash = new URLSearchParams(window.location.hash.slice(1))
-    const accessToken = hash.get('access_token')
-    const refreshToken = hash.get('refresh_token') ?? ''
 
+    // Implicit flow: SDK auto-reads #access_token from hash and fires PASSWORD_RECOVERY
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') setReady(true)
+    })
+
+    // PKCE flow fallback: exchange ?code= for a session
+    const code = new URLSearchParams(window.location.search).get('code')
     if (code) {
-      // PKCE flow
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
         if (error) setError(error.message)
         window.history.replaceState({}, '', '/auth/reset-password')
         setReady(true)
       })
-    } else if (accessToken) {
-      // Implicit flow
-      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
-        if (error) setError(error.message)
-        window.history.replaceState({}, '', '/auth/reset-password')
-        setReady(true)
-      })
-    } else {
-      setReady(true)
     }
+
+    return () => subscription.unsubscribe()
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
