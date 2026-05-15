@@ -1,0 +1,222 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>History · Floatfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="min-h-screen">
+
+<header class="border-b hairline sticky top-0 z-30 backdrop-blur" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
+  <div class="max-w-[1320px] mx-auto px-6 h-14 flex items-center gap-6">
+    <a href="index.html" class="flex items-center gap-2 font-semibold tracking-tight">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M5 11 L8 7 L10.5 9 L13 5.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Floatfolio
+    </a>
+    <nav class="flex items-center gap-1 text-sm" style="color: var(--fg-dim);">
+      <a data-nav="dashboard.html" href="dashboard.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Dashboard</a>
+      <a data-nav="holdings.html"  href="holdings.html"  class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Holdings</a>
+      <a data-nav="history.html"   href="history.html"   class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">History</a>
+      <a data-nav="settings.html"  href="settings.html"  class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Settings</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="seg" data-currency-toggle role="group" aria-label="Display currency">
+        <button data-curr="MYR" aria-pressed="true">MYR</button>
+        <button data-curr="USD" aria-pressed="false">USD</button>
+      </div>
+      <div class="seg" data-theme-toggle role="group" aria-label="Theme">
+        <button data-theme="dark" aria-pressed="true" aria-label="Dark theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11 7.5A4.5 4.5 0 0 1 5.5 2a4.5 4.5 0 1 0 5.5 5.5Z" fill="currentColor"/></svg>
+        </button>
+        <button data-theme="light" aria-pressed="false" aria-label="Light theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><g stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M6.5 1v1.5M6.5 10.5V12M1 6.5h1.5M10.5 6.5H12M2.6 2.6l1 1M9.4 9.4l1 1M2.6 10.4l1-1M9.4 3.6l1-1"/></g></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1320px] mx-auto px-6 py-10">
+
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-7">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">History</h1>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Floating equity vs cost basis · 162 days tracked</p>
+    </div>
+    <div class="tabs" id="range-tabs" role="tablist" aria-label="Time range">
+      <button data-tab="7"   aria-pressed="false">7D</button>
+      <button data-tab="30"  aria-pressed="true">30D</button>
+      <button data-tab="90"  aria-pressed="false">90D</button>
+      <button data-tab="365" aria-pressed="false">1Y</button>
+      <button data-tab="all" aria-pressed="false">All</button>
+    </div>
+  </div>
+
+  <!-- KPI strip -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-[0.12em]" style="color: var(--fg-mute);">Best day</div>
+      <div class="mono tnum mt-2 num-large profit" style="font-size:22px;" data-myr="3284.50" data-decimals="2" data-sign="true">+RM3,284.50</div>
+      <div class="text-xs mt-1 mono" style="color: var(--fg-mute);">Apr 23 · BTC +6.8%</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-[0.12em]" style="color: var(--fg-mute);">Worst day</div>
+      <div class="mono tnum mt-2 num-large loss" style="font-size:22px;" data-myr="-2150.20" data-decimals="2" data-sign="true">−RM2,150.20</div>
+      <div class="text-xs mt-1 mono" style="color: var(--fg-mute);">Apr 11 · TSLA −5.1%</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-[0.12em]" style="color: var(--fg-mute);">Total return</div>
+      <div class="mono tnum mt-2 num-large profit" style="font-size:22px;" data-myr="61708.50" data-decimals="0" data-sign="true">+RM61,708</div>
+      <div class="text-xs mt-1 mono profit">+49.5%</div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-[0.12em]" style="color: var(--fg-mute);">Days tracked</div>
+      <div class="mono tnum mt-2 num-large" style="font-size:22px;">162</div>
+      <div class="text-xs mt-1 mono" style="color: var(--fg-mute);">since Nov 27, 2025</div>
+    </div>
+  </section>
+
+  <!-- Equity curve -->
+  <section class="card p-6 mb-5">
+    <header class="flex items-center justify-between mb-3 flex-wrap gap-3">
+      <div>
+        <h2 class="font-medium">Equity curve</h2>
+        <p class="text-xs mt-0.5" style="color: var(--fg-mute);">Total portfolio value vs cost basis · last 30 days</p>
+      </div>
+      <div class="flex items-center gap-4 text-xs" style="color: var(--fg-dim);">
+        <span class="flex items-center gap-1.5"><span style="width:14px;height:2px;background:var(--profit);display:inline-block;"></span>Equity</span>
+        <span class="flex items-center gap-1.5"><span style="width:14px;height:0;border-top:2px dashed var(--fg-mute);display:inline-block;"></span>Cost basis</span>
+      </div>
+    </header>
+    <svg class="w-full" style="height: 360px;" viewBox="0 0 1000 360" preserveAspectRatio="none"
+      data-area='[171369,170842,172118,170993,171884,173210,172455,173908,174750,175204,176019,175480,176888,178150,177402,178724,179995,179308,180766,181890,181222,182441,183710,184602,183988,185177,186020,184779,185905,186241]'
+      data-basis="124533"
+      data-xlabels='["Apr 7","Apr 14","Apr 21","Apr 28","May 5"]'></svg>
+  </section>
+
+  <!-- Heatmap + breakdown -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <div class="card p-6 lg:col-span-2">
+      <header class="flex items-center justify-between mb-5 flex-wrap gap-3">
+        <div>
+          <h2 class="font-medium">Daily P/L</h2>
+          <p class="text-xs mt-0.5" style="color: var(--fg-mute);">Last 26 weeks · click a square for details</p>
+        </div>
+        <div class="flex items-center gap-1.5 text-xs" style="color: var(--fg-mute);">
+          <span>Loss</span>
+          <span class="heatmap-cell" style="background: rgba(239,68,68,0.55);"></span>
+          <span class="heatmap-cell" style="background: rgba(239,68,68,0.30);"></span>
+          <span class="heatmap-cell"></span>
+          <span class="heatmap-cell" style="background: rgba(16,185,129,0.30);"></span>
+          <span class="heatmap-cell" style="background: rgba(16,185,129,0.55);"></span>
+          <span class="heatmap-cell" style="background: rgba(16,185,129,0.85);"></span>
+          <span>Gain</span>
+        </div>
+      </header>
+
+      <div class="overflow-x-auto">
+        <div id="heatmap" class="flex gap-1" style="min-width: 580px;"></div>
+      </div>
+
+      <div class="text-xs mt-5 pt-4 border-t hairline flex items-center justify-between mono" style="color: var(--fg-mute);">
+        <span>96 green · 47 red · 19 flat</span>
+        <span>Streak: 4 green days</span>
+      </div>
+    </div>
+
+    <!-- Class contribution -->
+    <div class="card p-6">
+      <header class="flex items-center justify-between mb-5">
+        <h2 class="font-medium">Contribution to return</h2>
+      </header>
+      <ul class="space-y-5">
+        <li>
+          <div class="flex items-baseline justify-between mb-1.5">
+            <span class="flex items-center gap-2 text-sm"><span class="dot dot-crypto"></span>Crypto</span>
+            <span class="mono tnum profit" data-myr="54489.00" data-decimals="0" data-sign="true">+54,489</span>
+          </div>
+          <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--surface-2);">
+            <div style="width: 88%; height: 100%; background: var(--crypto);"></div>
+          </div>
+          <div class="text-[11px] mt-1 mono" style="color: var(--fg-mute);">88.3% of total gain</div>
+        </li>
+        <li>
+          <div class="flex items-baseline justify-between mb-1.5">
+            <span class="flex items-center gap-2 text-sm"><span class="dot dot-stocks"></span>Stocks</span>
+            <span class="mono tnum profit" data-myr="6432.00" data-decimals="0" data-sign="true">+6,432</span>
+          </div>
+          <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--surface-2);">
+            <div style="width: 10.4%; height: 100%; background: var(--stocks);"></div>
+          </div>
+          <div class="text-[11px] mt-1 mono" style="color: var(--fg-mute);">10.4% of total gain</div>
+        </li>
+        <li>
+          <div class="flex items-baseline justify-between mb-1.5">
+            <span class="flex items-center gap-2 text-sm"><span class="dot dot-gold"></span>Gold</span>
+            <span class="mono tnum profit" data-myr="787.00" data-decimals="0" data-sign="true">+787</span>
+          </div>
+          <div class="h-1.5 rounded-full overflow-hidden" style="background: var(--surface-2);">
+            <div style="width: 1.3%; height: 100%; background: var(--gold);"></div>
+          </div>
+          <div class="text-[11px] mt-1 mono" style="color: var(--fg-mute);">1.3% of total gain</div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <footer class="text-xs mt-12 pt-6 border-t hairline flex items-center justify-between" style="color: var(--fg-mute);">
+    <span>Past performance does not guarantee future results.</span>
+    <span class="mono">FX 1 USD = 4.72 MYR</span>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+  // Build heatmap — 26 weeks × 7 days, deterministic synthetic P/L
+  (function () {
+    const weeks = 26, days = 7;
+    const wrap = document.getElementById('heatmap');
+    let seed = 7;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const monthLabels = [];
+    const today = new Date('2026-05-07');
+    for (let w = 0; w < weeks; w++) {
+      const col = document.createElement('div');
+      col.className = 'flex flex-col gap-1';
+      for (let d = 0; d < days; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'heatmap-cell';
+        const r = rand();
+        const dayOffset = (weeks - 1 - w) * 7 + (6 - d);
+        const isFuture = dayOffset < 0;
+        if (isFuture || r < 0.10) {
+          // flat / future
+          cell.style.background = 'var(--surface-2)';
+          cell.style.opacity = isFuture ? '0.3' : '1';
+        } else if (r < 0.40) {
+          const intensity = 0.25 + rand() * 0.6;
+          cell.style.background = `rgba(239,68,68,${intensity.toFixed(2)})`;
+        } else {
+          const intensity = 0.25 + rand() * 0.65;
+          cell.style.background = `rgba(16,185,129,${intensity.toFixed(2)})`;
+        }
+        const date = new Date(today.getTime() - dayOffset * 86400000);
+        const pl = (rand() - 0.4) * 3000;
+        cell.title = `${date.toDateString()} · ${pl >= 0 ? '+' : '−'}RM${Math.abs(pl).toFixed(0)}`;
+        col.appendChild(cell);
+      }
+      wrap.appendChild(col);
+    }
+  })();
+
+  // Range tabs (visual only — would re-fetch in real app)
+  App.wireTabs(document.getElementById('range-tabs'), () => {});
+</script>
+</body>
+</html>

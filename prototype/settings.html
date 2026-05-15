@@ -1,0 +1,253 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Settings · Floatfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="min-h-screen">
+
+<header class="border-b hairline sticky top-0 z-30 backdrop-blur" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
+  <div class="max-w-[1320px] mx-auto px-6 h-14 flex items-center gap-6">
+    <a href="index.html" class="flex items-center gap-2 font-semibold tracking-tight">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M5 11 L8 7 L10.5 9 L13 5.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Floatfolio
+    </a>
+    <nav class="flex items-center gap-1 text-sm" style="color: var(--fg-dim);">
+      <a data-nav="dashboard.html" href="dashboard.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Dashboard</a>
+      <a data-nav="holdings.html"  href="holdings.html"  class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Holdings</a>
+      <a data-nav="history.html"   href="history.html"   class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">History</a>
+      <a data-nav="settings.html"  href="settings.html"  class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Settings</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="seg" data-currency-toggle role="group" aria-label="Display currency">
+        <button data-curr="MYR" aria-pressed="true">MYR</button>
+        <button data-curr="USD" aria-pressed="false">USD</button>
+      </div>
+      <div class="seg" data-theme-toggle role="group" aria-label="Theme">
+        <button data-theme="dark" aria-pressed="true" aria-label="Dark theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11 7.5A4.5 4.5 0 0 1 5.5 2a4.5 4.5 0 1 0 5.5 5.5Z" fill="currentColor"/></svg>
+        </button>
+        <button data-theme="light" aria-pressed="false" aria-label="Light theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><g stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M6.5 1v1.5M6.5 10.5V12M1 6.5h1.5M10.5 6.5H12M2.6 2.6l1 1M9.4 9.4l1 1M2.6 10.4l1-1M9.4 3.6l1-1"/></g></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[920px] mx-auto px-6 py-10">
+
+  <div class="mb-8">
+    <h1 class="text-2xl font-semibold tracking-tight">Settings</h1>
+    <p class="text-sm mt-1" style="color: var(--fg-dim);">Personal — only your email can sign in.</p>
+  </div>
+
+  <div class="grid grid-cols-[180px_1fr] gap-10">
+    <!-- Anchor nav -->
+    <aside class="text-sm sticky top-20 self-start space-y-1" style="color: var(--fg-dim);">
+      <a href="#account" class="block px-3 py-1.5 rounded-md hover:text-[var(--fg)]">Account</a>
+      <a href="#integrations" class="block px-3 py-1.5 rounded-md hover:text-[var(--fg)]">Integrations</a>
+      <a href="#preferences" class="block px-3 py-1.5 rounded-md hover:text-[var(--fg)]">Preferences</a>
+      <a href="#danger" class="block px-3 py-1.5 rounded-md text-[var(--loss)]">Danger zone</a>
+    </aside>
+
+    <div class="space-y-10">
+
+      <!-- Account -->
+      <section id="account" class="card p-6">
+        <h2 class="font-medium mb-1">Account</h2>
+        <p class="text-xs mb-5" style="color: var(--fg-mute);">Single-user mode. Magic-link auth via Supabase.</p>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm font-medium mb-1.5 block">Email</label>
+            <input type="email" class="field mono" value="me@floatfolio.local" readonly>
+          </div>
+          <button class="btn btn-ghost">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M9 4l-5 5M4 4l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Sign out
+          </button>
+        </div>
+      </section>
+
+      <!-- Integrations -->
+      <section id="integrations" class="card p-6">
+        <h2 class="font-medium mb-1">Integrations</h2>
+        <p class="text-xs mb-5" style="color: var(--fg-mute);">Auto-fetch from supported platforms. Other classes are manual entry.</p>
+
+        <!-- Luno -->
+        <div class="rounded-xl p-5" style="background: var(--surface-2); border: 1px solid var(--border);">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="dot dot-crypto" style="width:10px;height:10px;"></div>
+              <div>
+                <div class="font-medium">Luno</div>
+                <div class="text-xs" style="color: var(--fg-mute);">Crypto · last sync 2 min ago</div>
+              </div>
+            </div>
+            <span class="pill pill-profit"><span style="width:6px;height:6px;border-radius:999px;background:currentColor;display:inline-block;"></span>Connected</span>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="text-xs font-medium mb-1 block" style="color: var(--fg-dim);">API key ID</label>
+              <div class="relative">
+                <input type="text" class="field mono pr-20" id="luno-key" value="luno_a1b2c3d4e5f6g7h8" readonly style="-webkit-text-security: disc; text-security: disc;">
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost text-xs" style="padding: 4px 10px;" onclick="toggleMask('luno-key', this)">Show</button>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-medium mb-1 block" style="color: var(--fg-dim);">API secret</label>
+              <div class="relative">
+                <input type="password" class="field mono pr-20" id="luno-secret" value="••••••••••••••••••••" readonly>
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost text-xs" style="padding: 4px 10px;" onclick="toggleMask('luno-secret', this)">Show</button>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 mt-4">
+            <button class="btn btn-ghost text-xs">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M10 6a4 4 0 1 1-1.17-2.83M10 1.5V4H7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+              Test connection
+            </button>
+            <button class="btn btn-ghost text-xs">Replace keys</button>
+            <span class="text-xs ml-auto mono" style="color: var(--profit);">✓ Last test passed 14:32 MYT</span>
+          </div>
+        </div>
+
+        <!-- Moomoo + TNG -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+          <div class="rounded-xl p-4 flex items-center gap-3" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <span class="dot dot-stocks"></span>
+            <div class="flex-1">
+              <div class="text-sm font-medium">Moomoo</div>
+              <div class="text-xs" style="color: var(--fg-mute);">No public API · manual entry</div>
+            </div>
+            <span class="text-xs" style="color: var(--fg-mute);">Manual</span>
+          </div>
+          <div class="rounded-xl p-4 flex items-center gap-3" style="background: var(--surface-2); border: 1px solid var(--border);">
+            <span class="dot dot-gold"></span>
+            <div class="flex-1">
+              <div class="text-sm font-medium">TNG e-Mas</div>
+              <div class="text-xs" style="color: var(--fg-mute);">No public API · spot price + spread</div>
+            </div>
+            <span class="text-xs" style="color: var(--fg-mute);">Manual</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preferences -->
+      <section id="preferences" class="card p-6">
+        <h2 class="font-medium mb-1">Preferences</h2>
+        <p class="text-xs mb-5" style="color: var(--fg-mute);">Display-only, doesn't affect stored data.</p>
+
+        <div class="space-y-5">
+          <!-- Gold spread -->
+          <div>
+            <label class="text-sm font-medium mb-1.5 block">Gold spread</label>
+            <div class="flex items-center gap-3">
+              <div class="relative w-40">
+                <input type="number" min="0" max="10" step="0.1" value="2.5" class="field mono pr-10">
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm mono" style="color: var(--fg-mute);">%</span>
+              </div>
+              <p class="text-xs flex-1" style="color: var(--fg-mute);">
+                TNG e-Mas trades above spot. Floatfolio adjusts current price down by this percent so P/L reflects what you'd actually receive on sell.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-4 border-t hairline">
+            <!-- Default currency -->
+            <div>
+              <label class="text-sm font-medium mb-2 block">Default currency</label>
+              <div class="seg" role="radiogroup" style="display:flex;">
+                <button aria-pressed="true">MYR</button>
+                <button aria-pressed="false">USD</button>
+              </div>
+            </div>
+            <!-- Default theme -->
+            <div>
+              <label class="text-sm font-medium mb-2 block">Default theme</label>
+              <div class="seg" role="radiogroup" style="display:flex;">
+                <button aria-pressed="true">Dark</button>
+                <button aria-pressed="false">Light</button>
+                <button aria-pressed="false">System</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t hairline space-y-3">
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" checked class="mt-0.5">
+              <span>
+                <span class="text-sm font-medium block">Show floating P/L only</span>
+                <span class="text-xs" style="color: var(--fg-mute);">Exclude realised gains and platform fees from the dashboard hero number.</span>
+              </span>
+            </label>
+            <label class="flex items-start gap-3 cursor-pointer">
+              <input type="checkbox" class="mt-0.5">
+              <span>
+                <span class="text-sm font-medium block">Rebalance reminder</span>
+                <span class="text-xs" style="color: var(--fg-mute);">Notify when any class drifts &gt; 70% of total allocation.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Danger zone -->
+      <section id="danger" class="card p-6" style="border-color: rgba(239,68,68,0.25);">
+        <h2 class="font-medium mb-1" style="color: var(--loss);">Danger zone</h2>
+        <p class="text-xs mb-5" style="color: var(--fg-mute);">Irreversible actions.</p>
+
+        <div class="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <div class="text-sm font-medium">Delete all data</div>
+            <p class="text-xs mt-0.5" style="color: var(--fg-mute);">Wipes holdings, history, and integration credentials. Account stays.</p>
+          </div>
+          <button class="btn btn-danger" onclick="App.openOverlay('modal-wipe')">Delete all data</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- Wipe modal -->
+<div class="scrim" id="scrim" onclick="App.closeOverlays()"></div>
+<div class="modal" id="modal-wipe" role="alertdialog" aria-labelledby="wipe-title">
+  <div class="flex items-start gap-3 mb-4">
+    <div class="flex items-center justify-center" style="width:36px;height:36px;border-radius:10px;background:var(--loss-soft);color:var(--loss);flex:none;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 5v3M8 11h.01M8 1l7 13H1L8 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <h3 id="wipe-title" class="font-medium mb-1">Delete everything?</h3>
+      <p class="text-sm" style="color: var(--fg-dim);">All 6 holdings and 162 days of price history will be removed. This cannot be undone.</p>
+    </div>
+  </div>
+  <label class="text-xs font-medium mb-1.5 block" style="color: var(--fg-dim);">Type <span class="mono" style="color: var(--loss);">delete my data</span> to confirm</label>
+  <input type="text" class="field mono" placeholder="delete my data">
+  <div class="flex items-center justify-end gap-2 mt-5">
+    <button class="btn btn-ghost" onclick="App.closeOverlays()">Cancel</button>
+    <button class="btn btn-danger" disabled>Delete everything</button>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+  function toggleMask(id, btn) {
+    const el = document.getElementById(id);
+    const showing = el.style.webkitTextSecurity === 'none' || el.type === 'text';
+    if (id === 'luno-key') {
+      el.style.webkitTextSecurity = showing ? 'disc' : 'none';
+    } else {
+      el.type = showing ? 'password' : 'text';
+    }
+    btn.textContent = showing ? 'Show' : 'Hide';
+  }
+</script>
+</body>
+</html>

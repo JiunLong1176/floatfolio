@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 4%;
+    --surface: 240 8% 9%;
+    --surface-2: 235 9% 12%;
+    --foreground: 0 0% 96%;
+    --fg-dim: 240 4% 63%;
+    --fg-mute: 240 4% 45%;
+    --border: 240 6% 13%;
+    --ring: 262 83% 68%;
+    --primary: 262 83% 68%;
+    --profit-soft: rgba(16, 185, 129, 0.12);
+    --loss-soft: rgba(239, 68, 68, 0.12);
+    --primary-foreground: 0 0% 100%;
+    --muted: 240 8% 9%;
+    --muted-foreground: 240 4% 63%;
+    --accent: 240 8% 14%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --card: 240 8% 9%;
+    --card-foreground: 0 0% 96%;
+    --popover: 235 9% 12%;
+    --popover-foreground: 0 0% 96%;
+  }
+
+  .light {
+    --background: 0 0% 98%;
+    --surface: 0 0% 100%;
+    --surface-2: 240 5% 96%;
+    --foreground: 240 10% 6%;
+    --fg-dim: 240 4% 46%;
+    --fg-mute: 240 4% 64%;
+    --border: 240 6% 90%;
+    --ring: 262 83% 58%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 94%;
+    --accent-foreground: 240 10% 6%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 6%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 6%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+
+  .profit { color: #10b981; }
+  .loss { color: #ef4444; }
+
+  .hairline { border-color: hsl(var(--border)); }
+  .surface   { background-color: hsl(var(--surface)); }
+  .surface-2 { background-color: hsl(var(--surface-2)); }
+
+  .num-cents { color: hsl(var(--fg-mute)); font-weight: 400; }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 999px; font-size: 12px;
+    font-variant-numeric: tabular-nums; font-weight: 500;
+  }
+  .pill-profit { background: var(--profit-soft); color: #10b981; }
+  .pill-loss   { background: var(--loss-soft);   color: #ef4444; }
+
+  .dot         { width: 8px; height: 8px; border-radius: 999px; display: inline-block; flex-shrink: 0; }
+  .dot-stocks  { background: #3b82f6; }
+  .dot-gold    { background: #f59e0b; }
+  .dot-crypto  { background: #8b5cf6; }
+
+  .chip-stocks { background: rgba(59,130,246,0.12); color: #93c5fd; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; display: inline-block; }
+  .chip-gold   { background: rgba(245,158,11,0.12);  color: #fbbf24; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; display: inline-block; }
+  .chip-crypto { background: rgba(139,92,246,0.12);  color: #c4b5fd; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; display: inline-block; }
+
+  .fade-up { animation: fadeUp .3s ease both; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Drawer slide easing */
+[data-state=open].slide-in-from-right { animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+[data-state=closed].slide-out-to-right { animation-timing-function: cubic-bezier(.2,.8,.2,1); }
+
+/* Recharts overrides */
+.recharts-cartesian-axis-tick-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  fill: hsl(var(--fg-mute));
+}
+
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--fg-mute)); }

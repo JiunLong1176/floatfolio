@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "defaultMode": "bypassPermissions",
+    "allow": [
+      "Bash(ls -lh \"c:\\\\Users\\\\PC\\\\Documents\\\\flutter_project\\\\qr_pro\\\\prototype\"/* \"c:\\\\Users\\\\PC\\\\Documents\\\\flutter_project\\\\qr_pro\\\\prototype\"/**/*)",
+      "Bash(grep -E \"\\\\.\\(docx|pdf|md|txt|html\\)$\")",
+      "Bash(python3 -c ':*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(/c/Users/PC/fvm/default/bin/flutter.bat analyze:*)",
+      "Bash(where flutter:*)",
+      "Read(//c/Users/PC/fvm/default/**)",
+      "Read(//c/Users/PC/AppData/Local/flutter/**)",
+      "Read(//c/Users/PC/**)",
+      "Bash(/c/Users/PC/Documents/flutter_project/flutter/bin/flutter.bat analyze:*)",
+      "Bash(/c/Users/PC/Documents/flutter_project/flutter/bin/flutter pub:*)",
+      "Bash(/c/Users/PC/Documents/flutter_project/flutter/bin/flutter analyze:*)",
+      "Bash(flutter analyze:*)"
+    ]
+  }
+}

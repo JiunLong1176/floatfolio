@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Floatfolio · Prototype index</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="min-h-screen">
+
+<main class="max-w-[920px] mx-auto px-6 py-16">
+  <header class="mb-12">
+    <div class="flex items-center gap-2 font-semibold tracking-tight mb-6">
+      <svg width="20" height="20" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M5 11 L8 7 L10.5 9 L13 5.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Floatfolio
+    </div>
+    <h1 class="text-3xl font-semibold tracking-tight">Personal investments dashboard</h1>
+    <p class="text-sm mt-2 max-w-xl" style="color: var(--fg-dim);">
+      Static HTML mockup for a single-user portfolio tracker covering Moomoo (stocks), TNG e-Mas (gold) and Luno (crypto). Dark-default with a light toggle and live MYR ⇄ USD conversion across every monetary value.
+    </p>
+  </header>
+
+  <section class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <a href="dashboard.html" class="card card-hover p-5 group">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs uppercase tracking-[0.12em] mono" style="color: var(--fg-mute);">01</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="color: var(--fg-mute);" class="group-hover:text-[var(--fg)] transition"><path d="M3 2l5 4.5L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h2 class="font-medium">Dashboard</h2>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Hero P/L, asset cards, today's movers, equity preview, allocation.</p>
+    </a>
+    <a href="holdings.html" class="card card-hover p-5 group">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs uppercase tracking-[0.12em] mono" style="color: var(--fg-mute);">02</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="color: var(--fg-mute);" class="group-hover:text-[var(--fg)] transition"><path d="M3 2l5 4.5L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h2 class="font-medium">Holdings</h2>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Sortable table, asset-class filter chips, add-holding drawer, delete confirm.</p>
+    </a>
+    <a href="history.html" class="card card-hover p-5 group">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs uppercase tracking-[0.12em] mono" style="color: var(--fg-mute);">03</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="color: var(--fg-mute);" class="group-hover:text-[var(--fg)] transition"><path d="M3 2l5 4.5L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h2 class="font-medium">History</h2>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Equity curve with cost basis, daily-P/L heatmap, range KPIs.</p>
+    </a>
+    <a href="settings.html" class="card card-hover p-5 group">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs uppercase tracking-[0.12em] mono" style="color: var(--fg-mute);">04</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="color: var(--fg-mute);" class="group-hover:text-[var(--fg)] transition"><path d="M3 2l5 4.5L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h2 class="font-medium">Settings</h2>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Account, Luno keys, gold spread, theme, danger zone.</p>
+    </a>
+    <a href="login.html" class="card card-hover p-5 group md:col-span-2">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs uppercase tracking-[0.12em] mono" style="color: var(--fg-mute);">05</span>
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="color: var(--fg-mute);" class="group-hover:text-[var(--fg)] transition"><path d="M3 2l5 4.5L3 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h2 class="font-medium">Login</h2>
+      <p class="text-sm mt-1" style="color: var(--fg-dim);">Magic-link sign-in card with idle &amp; sent-confirmation states.</p>
+    </a>
+  </section>
+
+  <section class="card p-6 mt-8">
+    <h3 class="text-sm font-medium mb-3">Notes</h3>
+    <ul class="text-sm space-y-1.5" style="color: var(--fg-dim);">
+      <li>· Use the <span class="kbd">MYR</span>/<span class="kbd">USD</span> toggle in any header — every monetary number on the page reformats live.</li>
+      <li>· Theme preference and currency persist via <span class="mono text-xs">localStorage</span>.</li>
+      <li>· Sample data is realistic but static. Crypto would auto-sync via Luno's REST API in the real build.</li>
+      <li>· Floating P/L only — no fees or realised gains modelled.</li>
+    </ul>
+  </section>
+
+  <footer class="text-xs mt-10" style="color: var(--fg-mute);">
+    <span class="mono">Next.js 15 · Tailwind · shadcn/ui · Supabase · Vercel</span>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

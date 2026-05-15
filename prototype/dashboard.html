@@ -1,0 +1,296 @@
+﻿<!doctype html>
+<html lang="en" class="">
+<head>
+  <meta charset="utf-8" />
+  <title>Dashboard · Floatfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="min-h-screen">
+
+<!-- ─── Top bar ─────────────────────────────────────────────── -->
+<header class="border-b hairline sticky top-0 z-30 backdrop-blur" style="background: color-mix(in srgb, var(--bg) 85%, transparent);">
+  <div class="max-w-[1320px] mx-auto px-6 h-14 flex items-center gap-6">
+    <a href="index.html" class="flex items-center gap-2 font-semibold tracking-tight">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M5 11 L8 7 L10.5 9 L13 5.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Floatfolio
+    </a>
+    <nav class="flex items-center gap-1 text-sm" style="color: var(--fg-dim);">
+      <a data-nav="dashboard.html" href="dashboard.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Dashboard</a>
+      <a data-nav="holdings.html" href="holdings.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Holdings</a>
+      <a data-nav="history.html" href="history.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">History</a>
+      <a data-nav="settings.html" href="settings.html" class="px-3 py-1.5 rounded-md hover:text-[var(--fg)] aria-[current=page]:text-[var(--fg)] aria-[current=page]:bg-[var(--surface-2)]">Settings</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-3">
+      <div class="seg" data-currency-toggle role="group" aria-label="Display currency">
+        <button data-curr="MYR" aria-pressed="true">MYR</button>
+        <button data-curr="USD" aria-pressed="false">USD</button>
+      </div>
+      <div class="seg" data-theme-toggle role="group" aria-label="Theme">
+        <button data-theme="dark" aria-pressed="true" aria-label="Dark theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11 7.5A4.5 4.5 0 0 1 5.5 2a4.5 4.5 0 1 0 5.5 5.5Z" fill="currentColor"/></svg>
+        </button>
+        <button data-theme="light" aria-pressed="false" aria-label="Light theme">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><g stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M6.5 1v1.5M6.5 10.5V12M1 6.5h1.5M10.5 6.5H12M2.6 2.6l1 1M9.4 9.4l1 1M2.6 10.4l1-1M9.4 3.6l1-1"/></g></svg>
+        </button>
+      </div>
+      <a href="login.html" class="btn btn-ghost text-xs" title="Sign out / login screen">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 12c.6-2.4 2.6-3.8 5-3.8s4.4 1.4 5 3.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        me@floatfolio.local
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1320px] mx-auto px-6 py-10">
+
+  <!-- ═══ Hero ════════════════════════════════════════════════ -->
+  <section class="fade-up">
+    <div class="flex items-end justify-between flex-wrap gap-6 mb-6">
+      <div>
+        <div class="text-xs uppercase tracking-[0.12em]" style="color: var(--fg-mute);">Total portfolio value</div>
+        <div class="flex items-baseline gap-5 mt-3">
+          <h1 class="num-large mono font-medium tnum"
+              style="font-size: clamp(48px, 6.5vw, 84px); line-height: 1;"
+              data-myr="186241.50" data-decimals="2" data-split="true">RM186,241<span class="num-cents">.50</span></h1>
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+              <span class="pill pill-profit">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M5 2 L8 6 L2 6 Z" fill="currentColor"/></svg>
+                <span data-myr="2310.00" data-decimals="2" data-sign="true">+RM2,310.00</span>
+              </span>
+              <span class="pill pill-profit">+1.26%</span>
+              <span class="text-xs" style="color: var(--fg-mute);">today</span>
+            </div>
+            <div class="text-xs flex items-center gap-2" style="color: var(--fg-mute);">
+              <span class="profit mono">+<span data-myr="61708.50" data-decimals="0">61,708</span></span>
+              <span>all-time · +49.5%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs" style="color: var(--fg-mute);">
+        <span class="mono">Updated 2 min ago · 14:32 MYT</span>
+        <button class="btn btn-ghost btn-icon spin-hover" aria-label="Refresh" title="Refresh prices">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12 7a5 5 0 1 1-1.46-3.54M12 2v3h-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- equity preview attached to hero -->
+    <a href="history.html" class="card card-hover block p-1 group" aria-label="Open full equity history">
+      <div class="flex items-center justify-between px-4 pt-3 pb-2">
+        <div class="flex items-center gap-2 text-xs" style="color: var(--fg-mute);">
+          <span class="uppercase tracking-[0.12em]">Equity · 30D</span>
+          <span class="mono">+<span data-myr="14872.00" data-decimals="0">14,872</span> · +8.7%</span>
+        </div>
+        <span class="text-xs flex items-center gap-1 opacity-60 group-hover:opacity-100 transition" style="color: var(--fg-dim);">
+          Open history
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3 2l4 3.5L3 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </span>
+      </div>
+      <svg class="w-full h-[180px]" viewBox="0 0 800 180" preserveAspectRatio="none"
+        data-area='[171369,170842,172118,170993,171884,173210,172455,173908,174750,175204,176019,175480,176888,178150,177402,178724,179995,179308,180766,181890,181222,182441,183710,184602,183988,185177,186020,184779,185905,186241]'
+        data-xlabels='["Apr 7","Apr 14","Apr 21","Apr 28","May 5"]'></svg>
+    </a>
+  </section>
+
+  <!-- ═══ Asset class cards ═══════════════════════════════════ -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
+    <!-- STOCKS -->
+    <article class="card p-6">
+      <header class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-2.5">
+          <span class="dot dot-stocks"></span>
+          <h2 class="font-medium">Stocks</h2>
+          <span class="text-xs" style="color: var(--fg-mute);">Moomoo · 3</span>
+        </div>
+        <a href="holdings.html?tab=stocks" class="text-xs" style="color: var(--fg-mute);">→</a>
+      </header>
+      <div class="num-large mono tnum" style="font-size: 32px;" data-myr="48956.40" data-decimals="2" data-split="true">RM48,956<span class="num-cents">.40</span></div>
+      <div class="flex items-center gap-2 mt-2">
+        <span class="pill pill-profit"><span data-myr="6432.10" data-decimals="2" data-sign="true">+RM6,432.10</span></span>
+        <span class="pill pill-profit">+15.1%</span>
+      </div>
+      <div class="text-xs mt-2" style="color: var(--fg-mute);">
+        Cost <span class="mono" data-myr="42524.30" data-decimals="0">42,524</span>
+      </div>
+      <svg class="spark mt-4" viewBox="0 0 200 36" preserveAspectRatio="none"
+        data-spark='[42524,42890,42100,43200,44010,43520,44900,45720,45050,46100,46980,46410,47720,48560,48956]'></svg>
+    </article>
+
+    <!-- GOLD -->
+    <article class="card p-6">
+      <header class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-2.5">
+          <span class="dot dot-gold"></span>
+          <h2 class="font-medium">Gold</h2>
+          <span class="text-xs" style="color: var(--fg-mute);">TNG e-Mas · 12.5g</span>
+        </div>
+        <a href="holdings.html?tab=gold" class="text-xs" style="color: var(--fg-mute);">→</a>
+      </header>
+      <div class="num-large mono tnum" style="font-size: 32px;" data-myr="4350.00" data-decimals="2" data-split="true">RM4,350<span class="num-cents">.00</span></div>
+      <div class="flex items-center gap-2 mt-2">
+        <span class="pill pill-profit"><span data-myr="787.50" data-decimals="2" data-sign="true">+RM787.50</span></span>
+        <span class="pill pill-profit">+22.1%</span>
+      </div>
+      <div class="text-xs mt-2" style="color: var(--fg-mute);">
+        Cost <span class="mono" data-myr="3562.50" data-decimals="0">3,562</span>
+      </div>
+      <svg class="spark mt-4" viewBox="0 0 200 36" preserveAspectRatio="none"
+        data-spark='[3562,3580,3601,3640,3672,3690,3725,3801,3855,3920,3998,4072,4145,4280,4350]'></svg>
+    </article>
+
+    <!-- CRYPTO -->
+    <article class="card p-6">
+      <header class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-2.5">
+          <span class="dot dot-crypto"></span>
+          <h2 class="font-medium">Crypto</h2>
+          <span class="text-xs flex items-center gap-1" style="color: var(--fg-mute);">
+            Luno · 2
+            <span class="kbd" title="Auto-fetched from Luno API">live</span>
+          </span>
+        </div>
+        <a href="holdings.html?tab=crypto" class="text-xs" style="color: var(--fg-mute);">→</a>
+      </header>
+      <div class="num-large mono tnum" style="font-size: 32px;" data-myr="132935.10" data-decimals="2" data-split="true">RM132,935<span class="num-cents">.10</span></div>
+      <div class="flex items-center gap-2 mt-2">
+        <span class="pill pill-profit"><span data-myr="54489.10" data-decimals="2" data-sign="true">+RM54,489.10</span></span>
+        <span class="pill pill-profit">+69.5%</span>
+      </div>
+      <div class="text-xs mt-2" style="color: var(--fg-mute);">
+        Cost <span class="mono" data-myr="78446.00" data-decimals="0">78,446</span>
+      </div>
+      <svg class="spark mt-4" viewBox="0 0 200 36" preserveAspectRatio="none"
+        data-spark='[78446,82100,80500,85200,88900,92500,95800,99100,103400,108200,114600,119800,124200,129500,132935]'></svg>
+    </article>
+  </section>
+
+  <!-- ═══ Movers + breakdown row ═════════════════════════════ -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5 mt-5">
+
+    <!-- Top movers (spans 2) -->
+    <div class="card p-6 lg:col-span-2">
+      <header class="flex items-center justify-between mb-5">
+        <h2 class="font-medium">Today's movers</h2>
+        <span class="text-xs" style="color: var(--fg-mute);">5 holdings</span>
+      </header>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-1">
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.12em] mb-2" style="color: var(--fg-mute);">Best</div>
+          <ul class="divide-y" style="--tw-divide-opacity: 1; border-color: var(--border);">
+            <li class="flex items-center gap-3 py-2.5 border-b hairline">
+              <span class="dot dot-crypto"></span>
+              <span class="font-medium">BTC</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">0.085</span>
+              <span class="ml-auto pill pill-profit">+4.2%</span>
+              <span class="mono text-xs w-24 text-right tnum" data-myr="976.50" data-decimals="0" data-sign="true">+976</span>
+            </li>
+            <li class="flex items-center gap-3 py-2.5 border-b hairline">
+              <span class="dot dot-stocks"></span>
+              <span class="font-medium">AAPL</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">10 sh</span>
+              <span class="ml-auto pill pill-profit">+1.8%</span>
+              <span class="mono text-xs w-24 text-right tnum" data-myr="180.00" data-decimals="0" data-sign="true">+180</span>
+            </li>
+            <li class="flex items-center gap-3 py-2.5">
+              <span class="dot dot-gold"></span>
+              <span class="font-medium">XAU</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">12.5g</span>
+              <span class="ml-auto pill pill-profit">+0.7%</span>
+              <span class="mono text-xs w-24 text-right tnum" data-myr="30.45" data-decimals="0" data-sign="true">+30</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div class="text-[11px] uppercase tracking-[0.12em] mb-2" style="color: var(--fg-mute);">Worst</div>
+          <ul>
+            <li class="flex items-center gap-3 py-2.5 border-b hairline">
+              <span class="dot dot-stocks"></span>
+              <span class="font-medium">TSLA</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">5 sh</span>
+              <span class="ml-auto pill pill-loss">−2.4%</span>
+              <span class="mono text-xs w-24 text-right tnum loss" data-myr="-108.50" data-decimals="0" data-sign="true">−108</span>
+            </li>
+            <li class="flex items-center gap-3 py-2.5 border-b hairline">
+              <span class="dot dot-crypto"></span>
+              <span class="font-medium">ETH</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">1.2</span>
+              <span class="ml-auto pill pill-loss">−0.9%</span>
+              <span class="mono text-xs w-24 text-right tnum loss" data-myr="-133.92" data-decimals="0" data-sign="true">−133</span>
+            </li>
+            <li class="flex items-center gap-3 py-2.5">
+              <span class="dot dot-stocks"></span>
+              <span class="font-medium">9988.HK</span>
+              <span class="text-xs mono" style="color: var(--fg-mute);">50 sh</span>
+              <span class="ml-auto pill pill-loss">−0.3%</span>
+              <span class="mono text-xs w-24 text-right tnum loss" data-myr="-9.00" data-decimals="0" data-sign="true">−9</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allocation -->
+    <div class="card p-6">
+      <header class="flex items-center justify-between mb-5">
+        <h2 class="font-medium">Allocation</h2>
+        <span class="text-xs" style="color: var(--fg-mute);">by class</span>
+      </header>
+      <!-- bar -->
+      <div class="flex h-2 rounded-full overflow-hidden mb-5" style="background: var(--surface-2);">
+        <div style="width: 26.3%; background: var(--stocks);" title="Stocks 26.3%"></div>
+        <div style="width: 2.3%;  background: var(--gold);"   title="Gold 2.3%"></div>
+        <div style="width: 71.4%; background: var(--crypto);" title="Crypto 71.4%"></div>
+      </div>
+      <ul class="space-y-3">
+        <li class="flex items-center gap-3 text-sm">
+          <span class="dot dot-stocks"></span> Stocks
+          <span class="ml-auto mono tnum" style="color: var(--fg-dim);">26.3%</span>
+        </li>
+        <li class="flex items-center gap-3 text-sm">
+          <span class="dot dot-gold"></span> Gold
+          <span class="ml-auto mono tnum" style="color: var(--fg-dim);">2.3%</span>
+        </li>
+        <li class="flex items-center gap-3 text-sm">
+          <span class="dot dot-crypto"></span> Crypto
+          <span class="ml-auto mono tnum" style="color: var(--fg-dim);">71.4%</span>
+        </li>
+      </ul>
+      <div class="text-[11px] mt-5 pt-4 border-t hairline" style="color: var(--fg-mute);">
+        Crypto runs hot — rebalance reminder is off in <a href="settings.html" class="underline decoration-dotted underline-offset-2">Preferences</a>.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Empty state variant (commented out) ═══════════════
+  <section class="card p-12 text-center mt-10">
+    <div class="mx-auto mb-5 flex items-center justify-center" style="width:56px;height:56px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border);">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 14l4-4 3 3 5-6 4 5" stroke="var(--fg-dim)" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 class="text-lg font-medium mb-1">Nothing tracked yet</h2>
+    <p class="text-sm max-w-md mx-auto" style="color: var(--fg-dim);">
+      Add your first stock, gold position, or connect your Luno keys in Settings to start watching your floating P/L.
+    </p>
+    <div class="flex items-center justify-center gap-2 mt-6">
+      <a href="holdings.html" class="btn btn-primary">Add first holding</a>
+      <a href="settings.html" class="btn btn-ghost">Connect Luno</a>
+    </div>
+  </section>
+  ════════════════════════════════════════════════════════ -->
+
+  <footer class="text-xs mt-16 pt-6 border-t hairline flex items-center justify-between" style="color: var(--fg-mute);">
+    <span>Floating P/L only — does not include realised gains or fees.</span>
+    <span class="mono">FX 1 USD = 4.72 MYR · 1 HKD = 0.60 MYR</span>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

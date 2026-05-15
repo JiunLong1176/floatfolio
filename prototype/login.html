@@ -1,0 +1,95 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sign in · Floatfolio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="min-h-screen">
+
+<!-- Subtle radial vignette -->
+<div aria-hidden="true" style="position:fixed;inset:0;background: radial-gradient(ellipse 60% 50% at 50% 30%, color-mix(in srgb, var(--crypto) 14%, transparent), transparent 70%);pointer-events:none;"></div>
+
+<main class="relative min-h-screen grid place-items-center px-6 py-12">
+
+  <div class="absolute top-6 right-6 flex items-center gap-2">
+    <div class="seg" data-theme-toggle role="group" aria-label="Theme">
+      <button data-theme="dark" aria-pressed="true" aria-label="Dark theme">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M11 7.5A4.5 4.5 0 0 1 5.5 2a4.5 4.5 0 1 0 5.5 5.5Z" fill="currentColor"/></svg>
+      </button>
+      <button data-theme="light" aria-pressed="false" aria-label="Light theme">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.5" fill="currentColor"/><g stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M6.5 1v1.5M6.5 10.5V12M1 6.5h1.5M10.5 6.5H12M2.6 2.6l1 1M9.4 9.4l1 1M2.6 10.4l1-1M9.4 3.6l1-1"/></g></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Idle state ────────────────────────────────────────── -->
+  <div class="card p-9 w-full max-w-[400px] fade-up" id="card-idle">
+    <div class="flex flex-col items-center text-center mb-7">
+      <div class="flex items-center justify-center mb-4" style="width:48px;height:48px;border-radius:14px;background:var(--surface-2);border:1px solid var(--border);">
+        <svg width="22" height="22" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M5 11 L8 7 L10.5 9 L13 5.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1 class="text-xl font-semibold tracking-tight">Sign in to Floatfolio</h1>
+      <p class="text-sm mt-1.5" style="color: var(--fg-dim);">Track your floating profit across stocks, gold &amp; crypto.</p>
+    </div>
+
+    <form onsubmit="event.preventDefault(); showState('sent')" class="space-y-3">
+      <label class="block">
+        <span class="text-xs font-medium mb-1.5 block" style="color: var(--fg-dim);">Email</span>
+        <input type="email" required class="field mono" placeholder="me@floatfolio.local" autofocus>
+      </label>
+      <button type="submit" class="btn btn-primary w-full justify-center" id="send-btn">
+        Send magic link
+      </button>
+    </form>
+
+    <p class="text-xs text-center mt-5" style="color: var(--fg-mute);">
+      Only my email can sign in.
+    </p>
+  </div>
+
+  <!-- ── Loading state (commented; flip class on btn to demo) ──
+  <div class="card p-9 w-full max-w-[400px]">
+    <div class="flex flex-col items-center text-center">
+      <div class="animate-spin" style="width:24px;height:24px;border:2px solid var(--border-strong);border-top-color:var(--fg);border-radius:999px;"></div>
+      <p class="text-sm mt-4">Sending magic link…</p>
+    </div>
+  </div>
+  ───────────────────────────────────────────────────────── -->
+
+  <!-- ── Sent confirmation ─────────────────────────────────── -->
+  <div class="card p-9 w-full max-w-[400px] hidden fade-up" id="card-sent">
+    <div class="flex flex-col items-center text-center">
+      <div class="flex items-center justify-center mb-4" style="width:48px;height:48px;border-radius:14px;background:var(--profit-soft);color:var(--profit);">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 11l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <h1 class="text-xl font-semibold tracking-tight">Check your inbox</h1>
+      <p class="text-sm mt-1.5" style="color: var(--fg-dim);">We sent a sign-in link to <span class="mono" style="color: var(--fg);">me@floatfolio.local</span>. The link expires in 10 minutes.</p>
+
+      <a href="dashboard.html" class="btn btn-ghost mt-6 w-full justify-center">
+        Open inbox
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3 2l4 3.5L3 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </a>
+      <button class="text-xs mt-4" style="color: var(--fg-mute);" onclick="showState('idle')">Use a different email</button>
+    </div>
+  </div>
+
+  <footer class="absolute bottom-6 left-0 right-0 text-center text-xs" style="color: var(--fg-mute);">
+    <span class="mono">Floatfolio · personal investments tracker</span>
+  </footer>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+  function showState(s) {
+    document.getElementById('card-idle').classList.toggle('hidden', s !== 'idle');
+    document.getElementById('card-sent').classList.toggle('hidden', s !== 'sent');
+  }
+</script>
+</body>
+</html>
