@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import LoginForm from './login-form'
+import RecoveryRedirect from './recovery-redirect'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Sign in' }
@@ -22,6 +23,7 @@ export default async function LoginPage() {
           <p className="text-fg-dim text-sm">Track your floating P&amp;L every day</p>
         </div>
 
+        <RecoveryRedirect />
         <LoginForm />
 
       </div>

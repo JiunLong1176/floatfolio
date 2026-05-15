@@ -14,18 +14,29 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code')
-    if (!code) {
-      setReady(true)
-      return
-    }
     const supabase = createClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) setError(error.message)
-      // Remove code from URL without a page reload
-      window.history.replaceState({}, '', '/auth/reset-password')
+    const code = new URLSearchParams(window.location.search).get('code')
+    const hash = new URLSearchParams(window.location.hash.slice(1))
+    const accessToken = hash.get('access_token')
+    const refreshToken = hash.get('refresh_token') ?? ''
+
+    if (code) {
+      // PKCE flow
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) setError(error.message)
+        window.history.replaceState({}, '', '/auth/reset-password')
+        setReady(true)
+      })
+    } else if (accessToken) {
+      // Implicit flow
+      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).then(({ error }) => {
+        if (error) setError(error.message)
+        window.history.replaceState({}, '', '/auth/reset-password')
+        setReady(true)
+      })
+    } else {
       setReady(true)
-    })
+    }
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
