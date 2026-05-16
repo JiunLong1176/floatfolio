@@ -50,6 +50,7 @@ export interface ValuatedHolding extends Holding {
   pnl_usd: number
   dividend_myr: number
   dividend_usd: number
+  company_name?: string
 }
 
 export interface PortfolioSummary {

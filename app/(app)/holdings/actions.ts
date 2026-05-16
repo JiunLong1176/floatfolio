@@ -51,7 +51,7 @@ export async function validateSymbol(
   }
 
   const { fetchStockPrices } = await import('@/lib/prices/stocks')
-  const prices = await fetchStockPrices([symbol])
+  const { prices } = await fetchStockPrices([symbol])
   if (!prices[symbol]) {
     return { valid: false, error: `Symbol "${symbol}" not found. Check it's a valid ticker (e.g. AAPL, 9988.HK, 1066.KL).` }
   }

@@ -71,7 +71,14 @@ export default function HoldingsTable({ holdings, onEdit, cashByPlatform }: Prop
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-2">
                         <span className={`dot ${dotClass(h.asset_class)}`} />
-                        <span className="font-mono font-medium">{h.symbol}</span>
+                        {h.asset_class === 'stock' && h.company_name ? (
+                          <div className="flex flex-col">
+                            <span className="text-xs text-fg-dim leading-tight">{h.company_name}</span>
+                            <span className="font-mono font-medium">{h.symbol}</span>
+                          </div>
+                        ) : (
+                          <span className="font-mono font-medium">{h.symbol}</span>
+                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3.5 tabular font-mono text-fg-dim">{h.quantity}</td>

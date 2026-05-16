@@ -7,6 +7,7 @@ import { fetchGoldPriceUSDPerOz } from './prices/gold'
 interface PriceContext {
   fx: FxRates
   stockPrices: PriceMap
+  stockNames: Record<string, string>
   cryptoPrices: PriceMap
   goldPricePerGramMYR: number | null
 }
@@ -23,7 +24,7 @@ async function fetchAllPrices(
     .filter((h) => h.asset_class === 'crypto')
     .map((h) => h.symbol)
 
-  const [fx, stockPrices, cryptoPrices, goldUSDPerOz] = await Promise.all([
+  const [fx, stockResult, cryptoPrices, goldUSDPerOz] = await Promise.all([
     fetchFxRates(),
     fetchStockPrices(stockSymbols),
     fetchCryptoPrices(cryptoSymbols),
@@ -34,14 +35,14 @@ async function fetchAllPrices(
     ? (goldUSDPerOz * fx.USD_MYR / 31.1035) * (1 - Math.max(0, Math.min(goldSpreadPct, 20)) / 100)
     : null
 
-  return { fx, stockPrices, cryptoPrices, goldPricePerGramMYR }
+  return { fx, stockPrices: stockResult.prices, stockNames: stockResult.names, cryptoPrices, goldPricePerGramMYR }
 }
 
 function valuateHolding(
   holding: Holding,
   ctx: PriceContext
 ): ValuatedHolding | null {
-  const { fx, stockPrices, cryptoPrices, goldPricePerGramMYR } = ctx
+  const { fx, stockPrices, stockNames, cryptoPrices, goldPricePerGramMYR } = ctx
   let currentPriceNative: number | null = null
   let currentPriceMYR: number | null = null
 
@@ -58,6 +59,8 @@ function valuateHolding(
     currentPriceNative = cryptoPrices[holding.symbol] ?? null
     currentPriceMYR = currentPriceNative
   }
+
+  const companyName = holding.asset_class === 'stock' ? stockNames[holding.symbol] : undefined
 
   if (currentPriceMYR == null || currentPriceNative == null) {
     // No price — return zeros so the holding still shows
@@ -77,6 +80,7 @@ function valuateHolding(
       pnl_usd: toUSD(-costMYR, fx),
       dividend_myr: dividendMYR,
       dividend_usd: toUSD(dividendMYR, fx),
+      company_name: companyName,
     }
   }
 
@@ -102,6 +106,7 @@ function valuateHolding(
     pnl_usd: toUSD(pnlMYR, fx),
     dividend_myr: dividendMYR,
     dividend_usd: toUSD(dividendMYR, fx),
+    company_name: companyName,
   }
 }
 
