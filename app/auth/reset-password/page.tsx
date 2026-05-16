@@ -14,19 +14,12 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code')
-    if (!code) {
-      setError('No reset code found. Please request a new reset link.')
-      return
-    }
-
     const supabase = createClient()
-    supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-      if (error) {
-        setError(error.message)
-      } else {
-        window.history.replaceState({}, '', '/auth/reset-password')
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
         setReady(true)
+      } else {
+        setError('Reset link is invalid or has expired. Please request a new one.')
       }
     })
   }, [])
