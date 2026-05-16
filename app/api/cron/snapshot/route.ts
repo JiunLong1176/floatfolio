@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase.from('daily_snapshots').upsert({
       snap_date: today,
       total_value_myr: summary.total_value_myr,
-      total_cost_myr: summary.total_cost_myr,
+      total_cost_myr: summary.total_cost_myr + summary.total_cash_myr,
       total_value_usd: summary.total_value_usd,
-      total_cost_usd: summary.total_cost_usd,
+      total_cost_usd: summary.total_cost_usd + summary.total_cash_usd,
       fx_usd_myr: summary.fx.USD_MYR,
       breakdown: summary.by_class,
     })
