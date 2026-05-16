@@ -41,8 +41,8 @@ export default function ResetPasswordPage() {
     if (err) {
       setError(err.message)
     } else {
+      await supabase.auth.signOut()
       router.push('/login')
-      router.refresh()
     }
   }
 
