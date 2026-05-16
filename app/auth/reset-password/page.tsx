@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
     if (err) {
       setError(err.message)
     } else {
-      router.push('/dashboard')
+      router.push('/login')
       router.refresh()
     }
   }
