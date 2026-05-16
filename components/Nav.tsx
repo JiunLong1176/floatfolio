@@ -31,7 +31,7 @@ export default function Nav({ userEmail }: NavProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto max-w-[1320px] px-6 h-14 flex items-center gap-6">
+      <div className="mx-auto max-w-[1320px] px-3 sm:px-6 h-14 flex items-center gap-3 sm:gap-6">
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold tracking-tight text-sm mr-2">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
