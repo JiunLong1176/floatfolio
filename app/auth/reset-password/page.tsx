@@ -57,14 +57,16 @@ export default function ResetPasswordPage() {
           <p className="text-fg-dim text-sm">Set a new password</p>
         </div>
 
-        {!ready && !error ? (
-          <div className="flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-fg-dim" />
-          </div>
-        ) : error ? (
-          <div className="rounded-lg border border-border bg-surface p-6 text-center space-y-3">
-            <p className="text-sm text-loss">{error}</p>
-          </div>
+        {!ready ? (
+          error ? (
+            <div className="rounded-lg border border-border bg-surface p-6 text-center space-y-3">
+              <p className="text-sm text-loss">{error}</p>
+            </div>
+          ) : (
+            <div className="flex justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-fg-dim" />
+            </div>
+          )
         ) : (
           <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-surface p-6 space-y-4">
             <div className="space-y-1.5">
