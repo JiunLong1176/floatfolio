@@ -51,7 +51,7 @@ export default function HistoryClient({ snapshots, byClass }: Props) {
     },
     {
       label: 'Worst day',
-      value: worstDay != null ? fmt(worstDay, 'MYR') : '—',
+      value: worstDay != null ? (worstDay < 0 ? `-${fmt(worstDay, 'MYR')}` : fmt(worstDay, 'MYR')) : '—',
       sub: worstDay != null ? 'single-day loss' : 'no data yet',
       color: 'loss',
     },
