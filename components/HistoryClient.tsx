@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import EquityChart from '@/components/EquityChart'
 import DailyHeatmap from '@/components/DailyHeatmap'
 import ContributionChart from '@/components/ContributionChart'
+import AssetClassChart from '@/components/AssetClassChart'
 import { cn, fmt, fmtPct } from '@/lib/utils'
 import type { DailySnapshot, PortfolioSummary } from '@/types'
 
@@ -41,6 +42,30 @@ export default function HistoryClient({ snapshots, byClass }: Props) {
   const latestCost   = filtered.at(-1)?.total_cost_myr ?? null
   const totalReturn  = latestPnl != null && latestCost ? (latestPnl / latestCost) * 100 : null
   const daysTracked  = filtered.length
+
+  const CLASS_LABELS: Record<string, string> = { stock: 'Stocks', gold: 'Gold', crypto: 'Crypto' }
+
+  const classSeries = useMemo(() => {
+    const classes = ['stock', 'gold', 'crypto'] as const
+    return classes.map((cls) => ({
+      key: cls,
+      label: CLASS_LABELS[cls],
+      data: filtered
+        .map((s) => {
+          const b = s.breakdown as PortfolioSummary['by_class'] | null
+          const entry = b?.[cls]
+          if (!entry) return null
+          return {
+            date: s.snap_date,
+            value_myr: entry.value_myr,
+            cost_myr: entry.cost_myr,
+            value_usd: entry.value_usd,
+            cost_usd: s.fx_usd_myr > 0 ? entry.cost_myr / s.fx_usd_myr : 0,
+          }
+        })
+        .filter((d): d is NonNullable<typeof d> => d !== null),
+    }))
+  }, [filtered])
 
   const kpis = [
     {
@@ -128,6 +153,28 @@ export default function HistoryClient({ snapshots, byClass }: Props) {
         ) : (
           <EquityChart snapshots={filtered} />
         )}
+      </div>
+
+      {/* Per-class charts */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {classSeries.map(({ key, label, data }) => (
+          <div key={key} className="rounded-2xl border border-border bg-surface p-6 space-y-3">
+            <header className="flex items-center justify-between">
+              <h2 className="font-medium text-sm">{label}</h2>
+              <div className="flex items-center gap-4 text-xs text-fg-mute">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 h-0.5 rounded bg-profit inline-block" />
+                  Value
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-4 inline-block" style={{ borderTop: '1.5px dashed #71717a', marginTop: 1 }} />
+                  Cost
+                </span>
+              </div>
+            </header>
+            <AssetClassChart data={data} />
+          </div>
+        ))}
       </div>
 
       {/* Heatmap + Contribution */}
