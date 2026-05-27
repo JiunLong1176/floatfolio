@@ -89,3 +89,23 @@ export interface Settings {
   gold_spread_pct: number
   default_currency: DisplayCurrency
 }
+
+export type Sentiment = 'bullish' | 'bearish' | 'neutral'
+export type Signal = 'strong_buy' | 'buy' | 'hold' | 'sell' | 'strong_sell'
+export type Confidence = 'high' | 'medium' | 'low'
+
+export interface NewsSignal {
+  id: string
+  article_id: string
+  headline: string
+  summary: string | null
+  source: string | null
+  url: string | null
+  published_at: string
+  sentiment: Sentiment
+  signal: Signal
+  confidence: Confidence
+  tickers: string[]
+  reasoning: string | null
+  created_at: string
+}

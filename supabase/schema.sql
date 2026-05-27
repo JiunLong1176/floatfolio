@@ -86,3 +86,30 @@ create policy "owner can do everything" on daily_snapshots
   for all
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
+
+-- ------------------------------------------------------------
+-- News signals (AI-classified articles from Alpha Vantage)
+-- article_id = btoa(url).slice(0, 32) — stable unique ID from URL
+-- Writes happen via service role (bypasses RLS)
+-- ------------------------------------------------------------
+create table if not exists news_signals (
+  id           uuid primary key default gen_random_uuid(),
+  article_id   text not null unique,
+  headline     text not null,
+  summary      text,
+  source       text,
+  url          text,
+  published_at timestamptz not null,
+  sentiment    text not null check (sentiment in ('bullish', 'bearish', 'neutral')),
+  signal       text not null check (signal in ('strong_buy', 'buy', 'hold', 'sell', 'strong_sell')),
+  confidence   text not null check (confidence in ('high', 'medium', 'low')),
+  tickers      text[] not null default '{}',
+  reasoning    text,
+  created_at   timestamptz not null default now()
+);
+
+alter table news_signals enable row level security;
+
+create policy "authenticated users can read news_signals" on news_signals
+  for select
+  using (auth.role() = 'authenticated');
