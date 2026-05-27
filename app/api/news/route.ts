@@ -5,7 +5,7 @@ import type { Signal, Sentiment, Confidence } from '@/types'
 export const dynamic = 'force-dynamic'
 
 const AV_BASE = 'https://www.alphavantage.co/query'
-const WATCHED_TICKERS = 'AAPL,MSFT,NVDA,META,GOOGL,AMZN,TSLA,QQQ,SPY'
+// Free tier does not support ticker filtering — fetch general market news and filter by relevance in code
 const TICKER_REMAP: Record<string, string> = { GOOGL: 'GOOG' }
 
 interface AVTickerSentiment {
@@ -93,7 +93,7 @@ export async function GET() {
 
     // 2. Fetch Alpha Vantage news sentiment
     const apiKey = process.env.ALPHA_VANTAGE_API_KEY ?? ''
-    const url = `${AV_BASE}?function=NEWS_SENTIMENT&tickers=${WATCHED_TICKERS}&sort=LATEST&limit=50&apikey=${apiKey}`
+    const url = `${AV_BASE}?function=NEWS_SENTIMENT&topics=technology,financial_markets&sort=LATEST&limit=50&apikey=${apiKey}`
     const res = await fetch(url, { next: { revalidate: 0 } })
 
     if (!res.ok) {
