@@ -55,21 +55,6 @@ function mapSentiment(label: string): { sentiment: Sentiment; signal: Signal; co
   }
 }
 
-function isNoise(article: AVArticle): boolean {
-  const score = article.overall_sentiment_score
-  const label = article.overall_sentiment_label
-
-  // No meaningful ticker relevance — article not really about our tickers
-  const hasRelevantTicker = article.ticker_sentiment?.some(
-    (t) => parseFloat(t.relevance_score) >= 0.1
-  )
-  if (!hasRelevantTicker) return true
-
-  // Weak neutral signal — not actionable
-  if (label === 'Neutral' && score >= -0.15 && score <= 0.15) return true
-
-  return false
-}
 
 function extractTickers(article: AVArticle): string[] {
   return (article.ticker_sentiment ?? [])
@@ -108,10 +93,9 @@ export async function GET() {
       .filter((a) => !cachedIds.has(articleId(a.url)))
       .slice(0, 30) // cost guard
 
-    // 4. Map signals, filter noise, upsert
+    // 4. Map signals, upsert
     if (newArticles.length > 0) {
       const toInsert = newArticles
-        .filter((a) => !isNoise(a))
         .map((a) => {
           const { sentiment, signal, confidence } = mapSentiment(a.overall_sentiment_label)
           const tickers = extractTickers(a)
