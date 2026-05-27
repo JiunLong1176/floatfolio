@@ -49,7 +49,7 @@ For production, set these in your **Vercel Dashboard → Project → Settings �
 
 ## Daily Snapshot Cron Job
 
-Floatfolio automatically takes a daily portfolio snapshot at **3:55 PM UTC** via Vercel Cron. This powers the History page charts.
+Floatfolio automatically takes a daily portfolio snapshot at **3:55 PM UTC (11:55 PM UTC+8)** via Vercel Cron. This powers the History page charts.
 
 > Vercel Cron only runs on deployed instances — it does not trigger during local development.
 
