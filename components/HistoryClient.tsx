@@ -167,7 +167,7 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
       </div>
 
       {/* Per-class charts + S&P 500 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {classSeries.map(({ key, label, data }) => (
           <div key={key} className="rounded-2xl border border-border bg-surface p-6 space-y-3">
             <header className="flex items-center justify-between">
