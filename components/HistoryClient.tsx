@@ -188,7 +188,7 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
         ))}
         <div className="rounded-2xl border border-border bg-surface p-6 space-y-3">
           <header>
-            <h2 className="font-medium text-sm">S&amp;P 500</h2>
+            <h2 className="font-medium text-sm">VOO S&amp;P 500</h2>
           </header>
           <SP500Chart data={sp500Filtered} />
         </div>
