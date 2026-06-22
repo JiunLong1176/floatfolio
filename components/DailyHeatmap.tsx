@@ -9,17 +9,9 @@ interface Props {
 
 function colorFor(pnl: number | null): string {
   if (pnl === null) return 'hsl(var(--surface-2))'
-  if (Math.abs(pnl) < 50) return 'hsl(var(--surface-2))'
-  if (pnl > 0) {
-    const intensity = Math.min(pnl / 2000, 1)
-    if (intensity < 0.33) return 'rgba(16,185,129,0.20)'
-    if (intensity < 0.66) return 'rgba(16,185,129,0.40)'
-    return 'rgba(16,185,129,0.65)'
-  }
-  const intensity = Math.min(Math.abs(pnl) / 2000, 1)
-  if (intensity < 0.33) return 'rgba(239,68,68,0.20)'
-  if (intensity < 0.66) return 'rgba(239,68,68,0.40)'
-  return 'rgba(239,68,68,0.65)'
+  if (pnl > 0) return 'rgba(16,185,129,0.40)'
+  if (pnl < 0) return 'rgba(239,68,68,0.40)'
+  return 'hsl(var(--surface-2))'
 }
 
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -86,8 +78,8 @@ export default function DailyHeatmap({ snapshots }: Props) {
     return { rows, monthDays }
   }, [selectedMonth, daily])
 
-  const upDays   = monthDays.filter((d) => d.pnl > 50).length
-  const downDays = monthDays.filter((d) => d.pnl < -50).length
+  const upDays   = monthDays.filter((d) => d.pnl > 0).length
+  const downDays = monthDays.filter((d) => d.pnl < 0).length
   const flatDays = monthDays.length - upDays - downDays
 
   const [y, m] = selectedMonth.split('-').map(Number)
@@ -109,12 +101,9 @@ export default function DailyHeatmap({ snapshots }: Props) {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <h2 className="font-medium">Daily P&amp;L</h2>
         <div className="flex items-center gap-1.5 text-[11px] text-fg-mute">
+          <div className="w-3 h-3 rounded-[2px]" style={{ background: 'rgba(239,68,68,0.40)' }} />
           <span>Loss</span>
-          <div className="flex gap-0.5">
-            {['rgba(239,68,68,0.65)','rgba(239,68,68,0.40)','rgba(239,68,68,0.20)','hsl(var(--surface-2))','rgba(16,185,129,0.20)','rgba(16,185,129,0.40)','rgba(16,185,129,0.65)'].map((c, i) => (
-              <div key={i} className="w-3 h-3 rounded-[2px]" style={{ background: c }} />
-            ))}
-          </div>
+          <div className="w-3 h-3 rounded-[2px] ml-1" style={{ background: 'rgba(16,185,129,0.40)' }} />
           <span>Gain</span>
         </div>
       </div>
@@ -154,7 +143,7 @@ export default function DailyHeatmap({ snapshots }: Props) {
             {row.map((cell, ci) => {
               if (!cell) return <div key={ci} className="min-h-[52px] rounded-lg" />
               const { day, pnl } = cell
-              const amtColor = pnl === null ? '' : pnl > 50 ? 'profit' : pnl < -50 ? 'loss' : 'text-fg-mute'
+              const amtColor = pnl === null ? '' : pnl > 0 ? 'profit' : pnl < 0 ? 'loss' : 'text-fg-mute'
               return (
                 <div
                   key={ci}
