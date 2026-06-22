@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import HistoryClient from '@/components/HistoryClient'
+import { fetchSP500History } from '@/lib/prices/benchmark'
 import type { DailySnapshot, PortfolioSummary } from '@/types'
 import type { Metadata } from 'next'
 
@@ -14,10 +15,10 @@ const EMPTY_BY_CLASS: PortfolioSummary['by_class'] = {
 
 export default async function HistoryPage() {
   const supabase = await createClient()
-  const { data: snapshots } = await supabase
-    .from('daily_snapshots')
-    .select('*')
-    .order('snap_date', { ascending: true })
+  const [{ data: snapshots }, sp500] = await Promise.all([
+    supabase.from('daily_snapshots').select('*').order('snap_date', { ascending: true }),
+    fetchSP500History(),
+  ])
 
   const rows = (snapshots ?? []) as DailySnapshot[]
 
@@ -25,5 +26,5 @@ export default async function HistoryPage() {
   const latestBreakdown = rows.at(-1)?.breakdown as PortfolioSummary['by_class'] | null
   const byClass: PortfolioSummary['by_class'] = latestBreakdown ?? EMPTY_BY_CLASS
 
-  return <HistoryClient snapshots={rows} byClass={byClass} />
+  return <HistoryClient snapshots={rows} byClass={byClass} sp500={sp500} />
 }

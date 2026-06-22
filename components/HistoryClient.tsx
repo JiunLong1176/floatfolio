@@ -5,8 +5,10 @@ import EquityChart from '@/components/EquityChart'
 import DailyHeatmap from '@/components/DailyHeatmap'
 import ContributionChart from '@/components/ContributionChart'
 import AssetClassChart from '@/components/AssetClassChart'
+import BenchmarkChart from '@/components/BenchmarkChart'
 import { cn, fmt, fmtPct } from '@/lib/utils'
 import type { DailySnapshot, PortfolioSummary } from '@/types'
+import type { BenchmarkPoint } from '@/lib/prices/benchmark'
 
 type Range = '7' | '30' | '90' | '365' | 'all'
 
@@ -21,9 +23,10 @@ const RANGES: { id: Range; label: string }[] = [
 interface Props {
   snapshots: DailySnapshot[]
   byClass: PortfolioSummary['by_class']
+  sp500: BenchmarkPoint[]
 }
 
-export default function HistoryClient({ snapshots, byClass }: Props) {
+export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
   const [range, setRange] = useState<Range>('30')
 
   const filtered = useMemo(() => {
@@ -66,6 +69,38 @@ export default function HistoryClient({ snapshots, byClass }: Props) {
         .filter((d): d is NonNullable<typeof d> => d !== null),
     }))
   }, [filtered])
+
+  const benchmarkData = useMemo(() => {
+    if (filtered.length < 2 || sp500.length === 0) return []
+    // Build a map of date → sp500 close for fast lookup
+    const sp500Map = new Map(sp500.map((p) => [p.date, p.close]))
+    // Find the closest sp500 price on or before a given date
+    const getSP500Close = (date: string): number | null => {
+      if (sp500Map.has(date)) return sp500Map.get(date)!
+      // walk back up to 5 days for weekends/holidays
+      const d = new Date(date)
+      for (let i = 1; i <= 5; i++) {
+        d.setDate(d.getDate() - 1)
+        const prev = d.toISOString().slice(0, 10)
+        if (sp500Map.has(prev)) return sp500Map.get(prev)!
+      }
+      return null
+    }
+    const basePortfolio = filtered[0].total_value_myr
+    const baseSP500 = getSP500Close(filtered[0].snap_date)
+    if (!baseSP500 || basePortfolio === 0) return []
+    return filtered
+      .map((s) => {
+        const sp500Close = getSP500Close(s.snap_date)
+        if (!sp500Close) return null
+        return {
+          date: s.snap_date,
+          portfolio: (s.total_value_myr / basePortfolio - 1) * 100,
+          sp500: (sp500Close / baseSP500 - 1) * 100,
+        }
+      })
+      .filter((p): p is NonNullable<typeof p> => p !== null)
+  }, [filtered, sp500])
 
   const kpis = [
     {
@@ -153,6 +188,27 @@ export default function HistoryClient({ snapshots, byClass }: Props) {
         ) : (
           <EquityChart snapshots={filtered} />
         )}
+      </div>
+
+      {/* vs S&P 500 */}
+      <div className="rounded-2xl border border-border bg-surface p-6 space-y-4">
+        <header className="flex items-center justify-between">
+          <div>
+            <h2 className="font-medium">vs S&amp;P 500</h2>
+            <p className="text-xs text-fg-mute mt-0.5">Indexed to 0% at the start of the selected period.</p>
+          </div>
+          <div className="flex items-center gap-5 text-xs text-fg-mute">
+            <span className="flex items-center gap-1.5">
+              <span className="w-5 h-0.5 rounded bg-profit inline-block" />
+              Portfolio
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-5 inline-block" style={{ borderTop: '1.5px dashed hsl(240 4% 50%)', marginTop: 1 }} />
+              S&amp;P 500
+            </span>
+          </div>
+        </header>
+        <BenchmarkChart data={benchmarkData} />
       </div>
 
       {/* Per-class charts */}

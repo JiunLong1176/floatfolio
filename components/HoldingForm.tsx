@@ -104,7 +104,7 @@ export default function HoldingForm({ open, onClose, editing }: Props) {
     }
   }
 
-  const symbolPlaceholder = assetClass === 'stock' ? 'AAPL, 9988.HK' : assetClass === 'gold' ? 'XAU' : 'BTC'
+  const symbolPlaceholder = assetClass === 'stock' ? 'AAPL, VOO, 9988.HK' : assetClass === 'gold' ? 'XAU' : 'BTC'
   const qtyLabel          = assetClass === 'gold' ? 'Grams' : assetClass === 'crypto' ? 'Coins' : 'Shares'
 
   const inputCls = 'w-full bg-surface-2 border border-border rounded-[10px] px-3 py-2.5 text-sm text-foreground placeholder:text-fg-mute focus:outline-none focus:border-white/20 transition-colors font-mono'
