@@ -6,7 +6,7 @@ export interface BenchmarkPoint {
 export async function fetchSP500History(): Promise<BenchmarkPoint[]> {
   try {
     const res = await fetch(
-      'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=5y',
+      'https://query1.finance.yahoo.com/v8/finance/chart/VOO?interval=1d&range=5y',
       { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }, next: { revalidate: 3600 } }
     )
     if (!res.ok) return []
