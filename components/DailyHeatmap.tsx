@@ -80,7 +80,6 @@ export default function DailyHeatmap({ snapshots }: Props) {
 
   const upDays   = monthDays.filter((d) => d.pnl > 0).length
   const downDays = monthDays.filter((d) => d.pnl < 0).length
-  const flatDays = monthDays.length - upDays - downDays
 
   const [y, m] = selectedMonth.split('-').map(Number)
   const hasPrev = months.some((mo) => mo < selectedMonth)
@@ -167,7 +166,6 @@ export default function DailyHeatmap({ snapshots }: Props) {
       <div className="flex gap-4 text-xs text-fg-mute mt-4">
         <span><span className="profit font-medium">{upDays}</span> up</span>
         <span><span className="loss font-medium">{downDays}</span> down</span>
-        <span>{flatDays} flat</span>
         <span className="ml-auto">{monthDays.length} days tracked</span>
       </div>
     </div>
