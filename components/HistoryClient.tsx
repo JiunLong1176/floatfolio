@@ -187,8 +187,18 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
           </div>
         ))}
         <div className="rounded-2xl border border-border bg-surface p-6 space-y-3">
-          <header>
+          <header className="flex items-center justify-between">
             <h2 className="font-medium text-sm">VOO S&amp;P 500</h2>
+            <div className="flex items-center gap-4 text-xs text-fg-mute">
+              <span className="flex items-center gap-1.5">
+                <span className="w-4 h-0.5 rounded bg-profit inline-block" />
+                Value
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-4 inline-block" style={{ borderTop: '1.5px dashed #71717a', marginTop: 1 }} />
+                Start price
+              </span>
+            </div>
           </header>
           <SP500Chart data={sp500Filtered} />
         </div>

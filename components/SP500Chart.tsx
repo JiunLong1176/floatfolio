@@ -32,9 +32,11 @@ export default function SP500Chart({ data }: Props) {
   const last  = data[data.length - 1].close
   const color = last >= first ? '#10b981' : '#ef4444'
 
+  const chartData = data.map((d) => ({ ...d, cost: first }))
+
   return (
     <ResponsiveContainer width="100%" height={192}>
-      <AreaChart data={data} margin={{ top: 6, right: 4, left: 0, bottom: 0 }}>
+      <AreaChart data={chartData} margin={{ top: 6, right: 4, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
             <stop offset="5%"  stopColor={color} stopOpacity={0.3} />
@@ -61,8 +63,9 @@ export default function SP500Chart({ data }: Props) {
         <Tooltip
           contentStyle={{ background: 'hsl(235 9% 12%)', border: '1px solid hsl(240 6% 12%)', borderRadius: 8, fontSize: 12 }}
           labelFormatter={formatDate}
-          formatter={(value: number) => [fmtUSD(value), 'S&P 500']}
+          formatter={(value: number, name: string) => [fmtUSD(value), name === 'close' ? 'S&P 500' : 'Start price']}
         />
+        <Area type="monotone" dataKey="cost" stroke="hsl(240 4% 45%)" strokeDasharray="4 4" strokeWidth={1} fill="none" dot={false} />
         <Area type="monotone" dataKey="close" stroke={color} strokeWidth={2} fill={`url(#${gradId})`} dot={false} />
       </AreaChart>
     </ResponsiveContainer>
