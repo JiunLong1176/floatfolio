@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation'
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/holdings',  label: 'Holdings' },
-  { href: '/allocation', label: 'Allocation' },
   { href: '/history',   label: 'History' },
   { href: '/news',      label: 'News' },
   { href: '/settings',  label: 'Settings' },

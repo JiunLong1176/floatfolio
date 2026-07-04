@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import HoldingsTable from '@/components/HoldingsTable'
 import HoldingForm from '@/components/HoldingForm'
+import AllocationSection from '@/components/AllocationSection'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ValuatedHolding } from '@/types'
@@ -94,6 +95,7 @@ export default function HoldingsClient({
       </div>
 
       <HoldingsTable holdings={filtered} onEdit={handleEdit} cashByPlatform={cashByPlatform} />
+      {holdings.length > 0 && <AllocationSection holdings={holdings} />}
       <HoldingForm open={sheetOpen} onClose={handleClose} editing={editing} />
     </div>
   )

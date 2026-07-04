@@ -51,6 +51,32 @@ export default function HoldingsLoading() {
           <Shimmer className="h-4 w-12" />
         </div>
       </div>
+
+      {/* Allocation section */}
+      <div className="rounded-2xl border border-border bg-surface p-6 space-y-5">
+        <div className="flex items-center justify-between">
+          <Shimmer className="h-4 w-32" />
+          <Shimmer className="h-4 w-40" />
+        </div>
+        {[0, 1, 2, 3, 4].map((row) => (
+          <div key={row} className="flex items-center gap-4 py-1">
+            <Shimmer className="h-4 w-16" />
+            <Shimmer className="h-2 flex-1 rounded-full" />
+            <Shimmer className="h-4 w-40" />
+          </div>
+        ))}
+      </div>
+      <div className="rounded-2xl border border-border bg-surface p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <Shimmer className="h-4 w-40" />
+          <Shimmer className="h-9 w-28 rounded-[10px]" />
+        </div>
+        <div className="flex gap-2">
+          <Shimmer className="h-9 w-24 rounded-[10px]" />
+          <Shimmer className="h-9 w-24 rounded-[10px]" />
+          <Shimmer className="h-9 w-24 rounded-[10px]" />
+        </div>
+      </div>
     </div>
   )
 }

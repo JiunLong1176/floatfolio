@@ -40,7 +40,7 @@ interface Props {
   holdings: ValuatedHolding[]
 }
 
-export default function AllocationClient({ holdings }: Props) {
+export default function AllocationSection({ holdings }: Props) {
   const [targets, setTargets] = useState<Record<string, number>>({})
   const [contribution, setContribution] = useState(DEFAULT_CONTRIBUTION)
 
@@ -107,12 +107,7 @@ export default function AllocationClient({ holdings }: Props) {
     : []
 
   return (
-    <div className="space-y-6 fade-up">
-      <div>
-        <h1 className="text-xl font-semibold">Allocation</h1>
-        <p className="text-sm text-fg-dim mt-0.5">现状 vs 目标 — track drift from target and see where new cash should go.</p>
-      </div>
-
+    <div className="space-y-6">
       {/* Current vs target */}
       <div className="rounded-2xl border border-border bg-surface p-6 space-y-5">
         <header className="flex items-center justify-between flex-wrap gap-3">
