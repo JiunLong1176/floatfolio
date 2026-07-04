@@ -110,14 +110,14 @@ export default function AllocationClient({ holdings }: Props) {
     <div className="space-y-6 fade-up">
       <div>
         <h1 className="text-xl font-semibold">Allocation</h1>
-        <p className="text-sm text-fg-dim mt-0.5">目标 vs 现状 — track drift from target and see where new cash should go.</p>
+        <p className="text-sm text-fg-dim mt-0.5">现状 vs 目标 — track drift from target and see where new cash should go.</p>
       </div>
 
-      {/* Target vs current */}
+      {/* Current vs target */}
       <div className="rounded-2xl border border-border bg-surface p-6 space-y-5">
         <header className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h2 className="font-medium">Target vs current</h2>
+            <h2 className="font-medium">Current vs target</h2>
             <p className="text-xs text-fg-mute mt-0.5">{holdings.length} holdings · {fmt(totalValueMyr, 'MYR')} total</p>
           </div>
           {targetSum !== 100 && (
