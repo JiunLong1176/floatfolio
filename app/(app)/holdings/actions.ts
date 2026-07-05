@@ -66,3 +66,31 @@ export async function deleteHolding(id: string) {
   revalidatePath('/holdings')
   revalidatePath('/dashboard')
 }
+
+export async function saveAllocationTargets(targets: Record<string, number>) {
+  const schema = z.record(z.string(), z.number().min(0).max(100))
+  const parsed = schema.safeParse(targets)
+  if (!parsed.success) throw new Error(parsed.error.errors[0].message)
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('settings')
+    .upsert({ key: 'allocation_targets', value: JSON.stringify(parsed.data) })
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/holdings')
+}
+
+export async function saveMonthlyContribution(amount: number) {
+  const schema = z.number().min(0)
+  const parsed = schema.safeParse(amount)
+  if (!parsed.success) throw new Error(parsed.error.errors[0].message)
+
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('settings')
+    .upsert({ key: 'monthly_contribution', value: String(parsed.data) })
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/holdings')
+}

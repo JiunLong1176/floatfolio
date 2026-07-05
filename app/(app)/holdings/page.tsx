@@ -34,5 +34,17 @@ export default async function HoldingsPage() {
     luno:     { myr: summary.cash_by_platform.luno,     usd: summary.cash_by_platform.luno     / summary.fx.USD_MYR },
   } : undefined
 
-  return <HoldingsClient holdings={summary?.holdings ?? []} cashByPlatform={cashByPlatform} />
+  const targetsRaw = settings?.find((s) => s.key === 'allocation_targets')?.value
+  const initialTargets = targetsRaw ? JSON.parse(targetsRaw) : null
+  const contributionRaw = settings?.find((s) => s.key === 'monthly_contribution')?.value
+  const initialContribution = contributionRaw ? parseFloat(contributionRaw) : null
+
+  return (
+    <HoldingsClient
+      holdings={summary?.holdings ?? []}
+      cashByPlatform={cashByPlatform}
+      initialTargets={initialTargets}
+      initialContribution={initialContribution}
+    />
+  )
 }

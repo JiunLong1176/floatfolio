@@ -1,12 +1,15 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { fmt, fmtPct, cn } from '@/lib/utils'
+import { saveAllocationTargets, saveMonthlyContribution } from '@/app/(app)/holdings/actions'
 import type { ValuatedHolding, AssetClass } from '@/types'
 
+// Legacy localStorage keys — only read once, as a one-time migration into Supabase.
 const TARGETS_KEY = 'floatfolio_targets'
 const CONTRIBUTION_KEY = 'floatfolio_monthly_contribution'
 const DEFAULT_CONTRIBUTION = 1000
+const SAVE_DEBOUNCE_MS = 600
 
 function dotClass(cls: AssetClass) {
   return cls === 'stock' ? 'dot-stocks' : cls === 'gold' ? 'dot-gold' : 'dot-crypto'
@@ -38,34 +41,58 @@ function DriftBar({ drift, maxDrift }: { drift: number; maxDrift: number }) {
 
 interface Props {
   holdings: ValuatedHolding[]
+  initialTargets: Record<string, number> | null
+  initialContribution: number | null
 }
 
-export default function AllocationSection({ holdings }: Props) {
-  const [targets, setTargets] = useState<Record<string, number>>({})
-  const [contribution, setContribution] = useState(DEFAULT_CONTRIBUTION)
+export default function AllocationSection({ holdings, initialTargets, initialContribution }: Props) {
+  const [targets, setTargets] = useState<Record<string, number>>(initialTargets ?? {})
+  const [contribution, setContribution] = useState(initialContribution ?? DEFAULT_CONTRIBUTION)
+  const targetsSaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const contributionSaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
+  // One-time migration: if Supabase has no saved value yet, adopt whatever
+  // this browser previously stored locally and push it up.
   useEffect(() => {
-    const storedTargets = localStorage.getItem(TARGETS_KEY)
-    if (storedTargets) {
-      try { setTargets(JSON.parse(storedTargets)) } catch {}
+    if (initialTargets === null) {
+      const stored = localStorage.getItem(TARGETS_KEY)
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored)
+          setTargets(parsed)
+          saveAllocationTargets(parsed).catch(console.error)
+        } catch {}
+      }
     }
-    const storedContribution = localStorage.getItem(CONTRIBUTION_KEY)
-    if (storedContribution) {
-      const n = parseFloat(storedContribution)
-      if (!isNaN(n)) setContribution(n)
+    if (initialContribution === null) {
+      const stored = localStorage.getItem(CONTRIBUTION_KEY)
+      if (stored) {
+        const n = parseFloat(stored)
+        if (!isNaN(n)) {
+          setContribution(n)
+          saveMonthlyContribution(n).catch(console.error)
+        }
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function updateTarget(id: string, value: number) {
     const next = { ...targets, [id]: clampPct(value) }
     setTargets(next)
-    localStorage.setItem(TARGETS_KEY, JSON.stringify(next))
+    if (targetsSaveTimer.current) clearTimeout(targetsSaveTimer.current)
+    targetsSaveTimer.current = setTimeout(() => {
+      saveAllocationTargets(next).catch(console.error)
+    }, SAVE_DEBOUNCE_MS)
   }
 
   function updateContribution(value: number) {
     const next = Math.max(0, value)
     setContribution(next)
-    localStorage.setItem(CONTRIBUTION_KEY, String(next))
+    if (contributionSaveTimer.current) clearTimeout(contributionSaveTimer.current)
+    contributionSaveTimer.current = setTimeout(() => {
+      saveMonthlyContribution(next).catch(console.error)
+    }, SAVE_DEBOUNCE_MS)
   }
 
   const targetPctFor = (h: ValuatedHolding) => targets[h.id] ?? 0

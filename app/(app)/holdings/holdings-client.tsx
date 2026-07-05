@@ -20,9 +20,13 @@ const tabs: { id: Tab; label: string; dot?: string }[] = [
 export default function HoldingsClient({
   holdings,
   cashByPlatform,
+  initialTargets,
+  initialContribution,
 }: {
   holdings: ValuatedHolding[]
   cashByPlatform?: Record<string, { myr: number; usd: number }>
+  initialTargets: Record<string, number> | null
+  initialContribution: number | null
 }) {
   const [sheetOpen, setSheetOpen]   = useState(false)
   const [editing, setEditing]       = useState<ValuatedHolding | null>(null)
@@ -95,7 +99,13 @@ export default function HoldingsClient({
       </div>
 
       <HoldingsTable holdings={filtered} onEdit={handleEdit} cashByPlatform={cashByPlatform} />
-      {holdings.length > 0 && <AllocationSection holdings={holdings} />}
+      {holdings.length > 0 && (
+        <AllocationSection
+          holdings={holdings}
+          initialTargets={initialTargets}
+          initialContribution={initialContribution}
+        />
+      )}
       <HoldingForm open={sheetOpen} onClose={handleClose} editing={editing} />
     </div>
   )
