@@ -60,6 +60,14 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Verify Frontend Changes in a Real Browser
+
+For UI/frontend changes, don't just ask the user to check — verify it yourself before reporting done:
+- Start the dev server, write a small throwaway script or preview page that exercises the change, drive it with Playwright (navigate, interact, wait for state), and take a screenshot.
+- Read the screenshot back yourself to confirm it looks and works correctly — don't just trust that the code compiles or a diff looks plausible.
+- Delete any throwaway scripts/preview pages/screenshots afterward — they're scaffolding, not part of the app.
+- Only fall back to asking the user to check when the flow genuinely can't be reached this way (e.g. needs a real external device, or real production data you don't have access to).
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
