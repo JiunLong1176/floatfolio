@@ -9,9 +9,13 @@ export const dynamic = 'force-dynamic'
 export default async function HoldingsPage() {
   const supabase = await createClient()
 
-  const [{ data: holdings }, { data: settings }] = await Promise.all([
+  const [{ data: holdings }, { data: settings }, { data: contributions }] = await Promise.all([
     supabase.from('holdings').select('*').order('asset_class').order('symbol'),
     supabase.from('settings').select('key, value'),
+    supabase
+      .from('contributions')
+      .select('*, holdings(symbol, currency, asset_class)')
+      .order('invested_at', { ascending: false }),
   ])
 
   const goldSpreadPct = parseFloat(
@@ -45,6 +49,7 @@ export default async function HoldingsPage() {
       cashByPlatform={cashByPlatform}
       initialTargets={initialTargets}
       initialContribution={initialContribution}
+      contributions={contributions ?? []}
     />
   )
 }

@@ -3,10 +3,12 @@
 import { useState } from 'react'
 import HoldingsTable from '@/components/HoldingsTable'
 import HoldingForm from '@/components/HoldingForm'
+import ContributionForm from '@/components/ContributionForm'
+import ContributionsLog from '@/components/ContributionsLog'
 import AllocationSection from '@/components/AllocationSection'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { ValuatedHolding } from '@/types'
+import type { ValuatedHolding, ContributionWithHolding } from '@/types'
 
 type Tab = 'all' | 'stock' | 'gold' | 'crypto'
 
@@ -22,13 +24,16 @@ export default function HoldingsClient({
   cashByPlatform,
   initialTargets,
   initialContribution,
+  contributions,
 }: {
   holdings: ValuatedHolding[]
   cashByPlatform?: Record<string, { myr: number; usd: number }>
   initialTargets: Record<string, number> | null
   initialContribution: number | null
+  contributions: ContributionWithHolding[]
 }) {
   const [sheetOpen, setSheetOpen]   = useState(false)
+  const [contributeOpen, setContributeOpen] = useState(false)
   const [editing, setEditing]       = useState<ValuatedHolding | null>(null)
   const [activeTab, setActiveTab]   = useState<Tab>('all')
   const [search, setSearch]         = useState('')
@@ -55,12 +60,22 @@ export default function HoldingsClient({
           <h1 className="text-xl font-semibold">Holdings</h1>
           <p className="text-sm text-fg-dim mt-0.5">Track your stocks, gold, and crypto positions.</p>
         </div>
-        <button
-          onClick={() => { setEditing(null); setSheetOpen(true) }}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
-          + Add holding
-        </button>
+        <div className="flex items-center gap-2">
+          {holdings.length > 0 && (
+            <button
+              onClick={() => setContributeOpen(true)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] border border-border text-sm font-medium hover:bg-surface-2 transition-colors whitespace-nowrap"
+            >
+              + Log contribution
+            </button>
+          )}
+          <button
+            onClick={() => { setEditing(null); setSheetOpen(true) }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[10px] bg-foreground text-background text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            + Add holding
+          </button>
+        </div>
       </div>
 
       {/* Filter row */}
@@ -106,7 +121,9 @@ export default function HoldingsClient({
           initialContribution={initialContribution}
         />
       )}
+      {holdings.length > 0 && <ContributionsLog contributions={contributions} />}
       <HoldingForm open={sheetOpen} onClose={handleClose} editing={editing} />
+      <ContributionForm open={contributeOpen} onClose={() => setContributeOpen(false)} holdings={holdings} />
     </div>
   )
 }

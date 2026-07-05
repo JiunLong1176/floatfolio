@@ -67,6 +67,52 @@ export async function deleteHolding(id: string) {
   revalidatePath('/dashboard')
 }
 
+const ContributionSchema = z.object({
+  holding_id: z.string().uuid(),
+  invested_at: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  quantity: z.number().positive(),
+  unit_price: z.number().positive(),
+})
+
+export async function addContribution(data: unknown) {
+  const parsed = ContributionSchema.safeParse(data)
+  if (!parsed.success) throw new Error(parsed.error.errors[0].message)
+
+  const supabase = await createClient()
+
+  const { data: h, error: hErr } = await supabase
+    .from('holdings')
+    .select('quantity, avg_cost')
+    .eq('id', parsed.data.holding_id)
+    .single()
+  if (hErr || !h) throw new Error(hErr?.message ?? 'Holding not found.')
+
+  const oldQty = Number(h.quantity)
+  const oldAvg = Number(h.avg_cost)
+  const newQty = oldQty + parsed.data.quantity
+  const newAvg = (oldQty * oldAvg + parsed.data.quantity * parsed.data.unit_price) / newQty
+
+  const { error: cErr } = await supabase.from('contributions').insert(parsed.data)
+  if (cErr) throw new Error(cErr.message)
+
+  const { error: uErr } = await supabase
+    .from('holdings')
+    .update({ quantity: newQty, avg_cost: newAvg })
+    .eq('id', parsed.data.holding_id)
+  if (uErr) throw new Error(uErr.message)
+
+  revalidatePath('/holdings')
+  revalidatePath('/dashboard')
+}
+
+export async function deleteContribution(id: string) {
+  const supabase = await createClient()
+  const { error } = await supabase.from('contributions').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath('/holdings')
+}
+
 export async function saveAllocationTargets(targets: Record<string, number>) {
   const schema = z.record(z.string(), z.number().min(0).max(100))
   const parsed = schema.safeParse(targets)

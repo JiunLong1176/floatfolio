@@ -113,3 +113,26 @@ alter table news_signals enable row level security;
 create policy "authenticated users can read news_signals" on news_signals
   for select
   using (auth.role() = 'authenticated');
+
+-- ------------------------------------------------------------
+-- Contributions (log of money invested into a holding over time)
+-- Each row bumps the holding's quantity and re-blends its avg_cost.
+-- unit_price is in the holding's own currency (same unit as avg_cost).
+-- ------------------------------------------------------------
+create table if not exists contributions (
+  id           uuid primary key default gen_random_uuid(),
+  holding_id   uuid not null references holdings(id) on delete cascade,
+  invested_at  date not null,
+  quantity     numeric(18, 8) not null check (quantity > 0),
+  unit_price   numeric(18, 8) not null check (unit_price > 0),
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists contributions_invested_at_idx on contributions (invested_at desc);
+
+alter table contributions enable row level security;
+
+create policy "owner can do everything" on contributions
+  for all
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');

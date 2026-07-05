@@ -90,6 +90,24 @@ export interface Settings {
   default_currency: DisplayCurrency
 }
 
+export interface Contribution {
+  id: string
+  holding_id: string
+  invested_at: string // YYYY-MM-DD
+  quantity: number
+  unit_price: number // in the holding's currency
+  created_at: string
+}
+
+// Contribution joined with its holding's display fields (for the log UI)
+export interface ContributionWithHolding extends Contribution {
+  holdings: {
+    symbol: string
+    currency: Currency
+    asset_class: AssetClass
+  } | null
+}
+
 export type Sentiment = 'bullish' | 'bearish' | 'neutral'
 export type Signal = 'strong_buy' | 'buy' | 'hold' | 'sell' | 'strong_sell'
 export type Confidence = 'high' | 'medium' | 'low'
