@@ -155,7 +155,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
             <li key={holding.id} className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4 py-3.5 first:pt-0 last:pb-0">
               <div className="flex items-center gap-2 sm:w-28 shrink-0">
                 <span className={`dot ${dotClass(holding.asset_class)}`} />
-                <span className="font-mono font-medium text-sm">{holding.symbol}</span>
+                <span className="font-medium text-sm">{holding.company_name || holding.symbol}</span>
               </div>
 
               <div className="flex-1 min-w-[100px]">
@@ -174,7 +174,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
                     value={targetPct}
                     onChange={(e) => updateTarget(holding.id, parseFloat(e.target.value) || 0)}
                     className="w-14 bg-surface-2 border border-border rounded-md px-1.5 py-1 text-xs font-mono tabular text-right focus:outline-none focus:border-white/20 transition-colors"
-                    aria-label={`Target percentage for ${holding.symbol}`}
+                    aria-label={`Target percentage for ${holding.company_name || holding.symbol}`}
                   />
                   <span className="text-fg-mute">%</span>
                 </div>
@@ -217,7 +217,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
               {allocations.map(({ holding, amountMyr }) => (
                 <li key={holding.id} className="inline-flex items-center gap-2 px-3 py-2 rounded-[10px] bg-surface-2 border border-border text-sm">
                   <span className={`dot ${dotClass(holding.asset_class)}`} />
-                  <span className="font-medium">{holding.symbol}</span>
+                  <span className="font-medium">{holding.company_name || holding.symbol}</span>
                   <span className="font-mono tabular text-fg-dim">{fmt(amountMyr, 'MYR')}</span>
                 </li>
               ))}

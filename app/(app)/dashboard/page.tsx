@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                   {topGainers.map((h) => (
                     <li key={h.id} className="flex items-center gap-3 py-2.5">
                       <span className={`dot ${dotCls(h.asset_class)}`} />
-                      <span className="font-medium">{h.symbol}</span>
+                      <span className="font-medium">{h.company_name || h.symbol}</span>
                       <span className="text-xs font-mono text-fg-mute">{quantityLabel(h)}</span>
                       <span className="ml-auto pill pill-profit">{fmtPct(h.pnl_pct)}</span>
                       <span className="font-mono text-xs w-20 text-right tabular profit">
@@ -177,7 +177,7 @@ export default async function DashboardPage() {
                     {topLosers.map((h) => (
                       <li key={h.id} className="flex items-center gap-3 py-2.5">
                         <span className={`dot ${dotCls(h.asset_class)}`} />
-                        <span className="font-medium">{h.symbol}</span>
+                        <span className="font-medium">{h.company_name || h.symbol}</span>
                         <span className="text-xs font-mono text-fg-mute">{quantityLabel(h)}</span>
                         <span className="ml-auto pill pill-loss">{fmtPct(h.pnl_pct)}</span>
                         <span className="font-mono text-xs w-20 text-right tabular loss">

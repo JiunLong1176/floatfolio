@@ -85,7 +85,7 @@ export default function ContributionForm({ open, onClose, holdings }: Props) {
               <SelectContent>
                 {holdings.map((h) => (
                   <SelectItem key={h.id} value={h.id}>
-                    {h.symbol} · {h.asset_class}
+                    {h.company_name || h.symbol} · {h.asset_class}
                   </SelectItem>
                 ))}
               </SelectContent>
