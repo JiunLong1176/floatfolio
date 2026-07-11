@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog'
 import { upsertHolding, validateSymbol, deleteHolding } from '@/app/(app)/holdings/actions'
+import SymbolSearchInput from '@/components/SymbolSearchInput'
 import { Trash2 } from 'lucide-react'
 import type { Holding, AssetClass, Platform, Currency } from '@/types'
 
@@ -24,6 +25,14 @@ const ASSET_CURRENCIES: Record<AssetClass, Currency[]> = {
   stock: ['USD', 'HKD', 'SGD', 'MYR'],
   gold: ['MYR'],
   crypto: ['MYR'],
+}
+
+function inferCurrency(symbol: string): Currency {
+  const s = symbol.toUpperCase()
+  if (s.endsWith('.KL')) return 'MYR'
+  if (s.endsWith('.HK')) return 'HKD'
+  if (s.endsWith('.SI')) return 'SGD'
+  return 'USD'
 }
 
 const ASSET_DOT: Record<AssetClass, string> = {
@@ -147,15 +156,29 @@ export default function HoldingForm({ open, onClose, editing }: Props) {
           {/* Symbol */}
           <div>
             <label className={labelCls} htmlFor="symbol">Symbol *</label>
-            <input
-              id="symbol"
-              type="text"
-              value={symbol}
-              onChange={(e) => setSymbol(e.target.value)}
-              placeholder={symbolPlaceholder}
-              className={inputCls}
-              required
-            />
+            {assetClass === 'stock' ? (
+              <SymbolSearchInput
+                id="symbol"
+                value={symbol}
+                onChange={setSymbol}
+                onSelect={(r) => {
+                  setSymbol(r.symbol)
+                  setCurrency(inferCurrency(r.symbol))
+                }}
+                placeholder={symbolPlaceholder}
+                className={inputCls}
+              />
+            ) : (
+              <input
+                id="symbol"
+                type="text"
+                value={symbol}
+                onChange={(e) => setSymbol(e.target.value)}
+                placeholder={symbolPlaceholder}
+                className={inputCls}
+                required
+              />
+            )}
           </div>
 
           {/* Qty + avg cost */}
