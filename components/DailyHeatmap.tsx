@@ -41,7 +41,8 @@ export default function DailyHeatmap({ snapshots }: Props) {
     for (let i = 1; i < snapshots.length; i++) {
       map.set(
         snapshots[i].snap_date,
-        snapshots[i].total_value_myr - snapshots[i - 1].total_value_myr,
+        (snapshots[i].total_value_myr - snapshots[i].total_cost_myr) -
+          (snapshots[i - 1].total_value_myr - snapshots[i - 1].total_cost_myr),
       )
     }
     return map

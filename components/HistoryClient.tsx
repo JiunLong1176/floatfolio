@@ -38,7 +38,8 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
   }, [snapshots, range])
 
   // KPIs from filtered data
-  const dailyChanges = filtered.slice(1).map((r, i) => r.total_value_myr - filtered[i].total_value_myr)
+  const pnl = (s: DailySnapshot) => s.total_value_myr - s.total_cost_myr
+  const dailyChanges = filtered.slice(1).map((r, i) => pnl(r) - pnl(filtered[i]))
   const bestDay      = dailyChanges.length ? Math.max(...dailyChanges) : null
   const worstDay     = dailyChanges.length ? Math.min(...dailyChanges) : null
   const latestPnl    = filtered.length > 0 ? filtered.at(-1)!.total_value_myr - filtered.at(-1)!.total_cost_myr : null
@@ -162,7 +163,7 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
             Not enough data for this range. Try a wider time window.
           </div>
         ) : (
-          <EquityChart snapshots={filtered} />
+          <EquityChart snapshots={filtered} adjusted />
         )}
       </div>
 

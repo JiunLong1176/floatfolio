@@ -11,13 +11,14 @@ import Link from 'next/link'
 interface Props {
   snapshots: DailySnapshot[]
   compact?: boolean
+  adjusted?: boolean
 }
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('en-MY', { month: 'short', day: 'numeric' })
 }
 
-export default function EquityChart({ snapshots, compact }: Props) {
+export default function EquityChart({ snapshots, compact, adjusted }: Props) {
   const { currency } = useCurrency()
 
   if (snapshots.length < 2) {
@@ -29,11 +30,19 @@ export default function EquityChart({ snapshots, compact }: Props) {
     )
   }
 
-  const data = snapshots.map((s) => ({
+  const raw = snapshots.map((s) => ({
     date: s.snap_date,
     value: currency === 'MYR' ? s.total_value_myr : s.total_value_usd,
     cost: currency === 'MYR' ? s.total_cost_myr : s.total_cost_usd,
   }))
+
+  // When adjusted, re-base to remove external cash-flow steps (deposits, withdrawals,
+  // contributions): both value and cost move together on those days, so subtracting the
+  // cost change relative to the range start leaves only market-driven movement.
+  const baseCost = raw[0].cost
+  const data = adjusted
+    ? raw.map((d) => ({ date: d.date, value: d.value - (d.cost - baseCost), cost: baseCost }))
+    : raw
 
   const minCost = Math.min(...data.map((d) => d.cost))
   const allPositive = data.every((d) => d.value >= d.cost)
