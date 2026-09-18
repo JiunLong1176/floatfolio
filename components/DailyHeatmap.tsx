@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useCurrency } from '@/contexts/currency'
 import type { DailySnapshot } from '@/types'
 
 interface Props {
@@ -36,17 +37,19 @@ function fmtAmt(pnl: number): string {
 }
 
 export default function DailyHeatmap({ snapshots }: Props) {
+  const { currency } = useCurrency()
+  const pnlOf = (s: DailySnapshot) => currency === 'MYR'
+    ? s.total_value_myr - s.total_cost_myr
+    : s.total_value_usd - s.total_cost_usd
+
   const daily = useMemo(() => {
     const map = new Map<string, number>()
     for (let i = 1; i < snapshots.length; i++) {
-      map.set(
-        snapshots[i].snap_date,
-        (snapshots[i].total_value_myr - snapshots[i].total_cost_myr) -
-          (snapshots[i - 1].total_value_myr - snapshots[i - 1].total_cost_myr),
-      )
+      map.set(snapshots[i].snap_date, pnlOf(snapshots[i]) - pnlOf(snapshots[i - 1]))
     }
     return map
-  }, [snapshots])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snapshots, currency])
 
   const months = useMemo(() => {
     const s = new Set<string>()

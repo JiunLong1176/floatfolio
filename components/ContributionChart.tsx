@@ -1,4 +1,7 @@
+'use client'
+
 import { fmt } from '@/lib/utils'
+import { useCurrency } from '@/contexts/currency'
 import type { PortfolioSummary } from '@/types'
 
 interface Props {
@@ -12,14 +15,17 @@ const classes = [
 ]
 
 export default function ContributionChart({ by_class }: Props) {
-  const totalPnl = classes.reduce((s, c) => s + Math.abs(by_class[c.key].pnl_myr), 0)
+  const { currency } = useCurrency()
+  const pnlOf = (key: 'stock' | 'gold' | 'crypto') =>
+    currency === 'MYR' ? by_class[key].pnl_myr : by_class[key].pnl_usd
+  const totalPnl = classes.reduce((s, c) => s + Math.abs(pnlOf(c.key)), 0)
 
   return (
     <div className="rounded-2xl border border-border bg-surface p-6">
       <h2 className="font-medium mb-5">Contribution</h2>
       <ul className="space-y-5">
         {classes.map(({ key, label, dot, color }) => {
-          const pnl   = by_class[key].pnl_myr
+          const pnl   = pnlOf(key)
           const pct   = totalPnl > 0 ? (Math.abs(pnl) / totalPnl) * 100 : 0
           const isUp  = pnl >= 0
 
@@ -31,7 +37,7 @@ export default function ContributionChart({ by_class }: Props) {
                   {label}
                 </span>
                 <span className={`font-mono text-sm tabular ${isUp ? 'profit' : 'loss'}`}>
-                  {isUp ? '+' : ''}{fmt(pnl, 'MYR')}
+                  {isUp ? '+' : ''}{fmt(pnl, currency)}
                 </span>
               </div>
               <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">

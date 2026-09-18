@@ -7,6 +7,7 @@ import ContributionChart from '@/components/ContributionChart'
 import AssetClassChart from '@/components/AssetClassChart'
 import SP500Chart from '@/components/SP500Chart'
 import { cn, fmt, fmtPct } from '@/lib/utils'
+import { useCurrency } from '@/contexts/currency'
 import type { DailySnapshot, PortfolioSummary } from '@/types'
 import type { BenchmarkPoint } from '@/lib/prices/benchmark'
 
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
+  const { currency } = useCurrency()
   const [range, setRange] = useState<Range>('30')
 
   const filtered = useMemo(() => {
@@ -38,12 +40,16 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
   }, [snapshots, range])
 
   // KPIs from filtered data
-  const pnl = (s: DailySnapshot) => s.total_value_myr - s.total_cost_myr
+  const pnl = (s: DailySnapshot) => currency === 'MYR'
+    ? s.total_value_myr - s.total_cost_myr
+    : s.total_value_usd - s.total_cost_usd
   const dailyChanges = filtered.slice(1).map((r, i) => pnl(r) - pnl(filtered[i]))
   const bestDay      = dailyChanges.length ? Math.max(...dailyChanges) : null
   const worstDay     = dailyChanges.length ? Math.min(...dailyChanges) : null
-  const latestPnl    = filtered.length > 0 ? filtered.at(-1)!.total_value_myr - filtered.at(-1)!.total_cost_myr : null
-  const latestCost   = filtered.at(-1)?.total_cost_myr ?? null
+  const latestPnl    = filtered.length > 0 ? pnl(filtered.at(-1)!) : null
+  const latestCost   = filtered.length > 0
+    ? (currency === 'MYR' ? filtered.at(-1)!.total_cost_myr : filtered.at(-1)!.total_cost_usd)
+    : null
   const totalReturn  = latestPnl != null && latestCost ? (latestPnl / latestCost) * 100 : null
   const daysTracked  = filtered.length
 
@@ -82,20 +88,20 @@ export default function HistoryClient({ snapshots, byClass, sp500 }: Props) {
   const kpis = [
     {
       label: 'Best day',
-      value: bestDay != null ? `+${fmt(bestDay, 'MYR')}` : '—',
+      value: bestDay != null ? `+${fmt(bestDay, currency)}` : '—',
       sub: bestDay != null ? 'single-day gain' : 'no data yet',
       color: 'profit',
     },
     {
       label: 'Worst day',
-      value: worstDay != null ? (worstDay < 0 ? `-${fmt(worstDay, 'MYR')}` : fmt(worstDay, 'MYR')) : '—',
+      value: worstDay != null ? (worstDay < 0 ? `-${fmt(worstDay, currency)}` : fmt(worstDay, currency)) : '—',
       sub: worstDay != null ? 'single-day loss' : 'no data yet',
       color: 'loss',
     },
     {
       label: 'Total return',
       value: totalReturn != null ? fmtPct(totalReturn) : '—',
-      sub: latestPnl != null ? `${fmt(latestPnl, 'MYR')} floating P/L` : 'no data yet',
+      sub: latestPnl != null ? `${fmt(latestPnl, currency)} floating P/L` : 'no data yet',
       color: totalReturn != null ? (totalReturn >= 0 ? 'profit' : 'loss') : '',
     },
     {
