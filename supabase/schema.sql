@@ -1,6 +1,12 @@
 -- ============================================================
 -- Floatfolio — Supabase schema
 -- Run this in the Supabase SQL editor (Dashboard > SQL Editor)
+--
+-- For an EXISTING/live database that already has data, do NOT
+-- run this file — it uses `create table if not exists` and will
+-- not retroactively add columns or fix constraints on tables that
+-- already exist. Run supabase/migrations/0001_multi_tenant_scoping.sql
+-- instead, which alters the live tables in place and backfills data.
 -- ============================================================
 
 -- Enable UUID extension
@@ -11,6 +17,7 @@ create extension if not exists "uuid-ossp";
 -- ------------------------------------------------------------
 create table if not exists holdings (
   id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null default auth.uid() references auth.users(id) on delete cascade,
   asset_class   text not null check (asset_class in ('stock', 'gold', 'crypto')),
   platform      text not null check (platform in ('moomoo', 'tng_emas', 'luno')),
   symbol        text not null,
@@ -22,6 +29,8 @@ create table if not exists holdings (
   created_at    timestamptz not null default now(),
   updated_at    timestamptz not null default now()
 );
+
+create index if not exists holdings_user_id_idx on holdings(user_id);
 
 -- Auto-update updated_at
 create or replace function update_updated_at()
@@ -41,51 +50,54 @@ alter table holdings enable row level security;
 
 create policy "owner can do everything" on holdings
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- ------------------------------------------------------------
 -- Settings (key-value store)
 -- ------------------------------------------------------------
 create table if not exists settings (
-  key   text primary key,
-  value text not null
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  key     text not null,
+  value   text not null,
+  primary key (user_id, key)
 );
 
 alter table settings enable row level security;
 
 create policy "owner can do everything" on settings
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
--- Default settings
-insert into settings (key, value) values
-  ('gold_spread_pct', '0'),
-  ('default_currency', 'MYR')
-on conflict (key) do nothing;
+-- No default settings seed: the app already falls back to sensible
+-- defaults in code (gold_spread_pct '0', default_currency 'MYR')
+-- when a user has no settings rows yet — see
+-- app/(app)/settings/page.tsx and app/(app)/layout.tsx.
 
 -- ------------------------------------------------------------
 -- Daily snapshots
 -- One row per day — ~1 KB × 365 ≈ 400 KB/year (well within free tier)
 -- ------------------------------------------------------------
 create table if not exists daily_snapshots (
-  snap_date         date primary key,
+  user_id           uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  snap_date         date not null,
   total_value_myr   numeric(18, 2) not null,
   total_cost_myr    numeric(18, 2) not null,
   total_value_usd   numeric(18, 2) not null,
   total_cost_usd    numeric(18, 2) not null,
   fx_usd_myr        numeric(10, 4) not null,
   breakdown         jsonb not null default '{}',
-  created_at        timestamptz not null default now()
+  created_at        timestamptz not null default now(),
+  primary key (user_id, snap_date)
 );
 
 alter table daily_snapshots enable row level security;
 
 create policy "owner can do everything" on daily_snapshots
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 
 -- ------------------------------------------------------------
 -- News signals (AI-classified articles from Alpha Vantage)
@@ -121,6 +133,7 @@ create policy "authenticated users can read news_signals" on news_signals
 -- ------------------------------------------------------------
 create table if not exists contributions (
   id           uuid primary key default gen_random_uuid(),
+  user_id      uuid not null default auth.uid() references auth.users(id) on delete cascade,
   holding_id   uuid not null references holdings(id) on delete cascade,
   invested_at  date not null,
   quantity     numeric(18, 8) not null check (quantity > 0),
@@ -129,10 +142,11 @@ create table if not exists contributions (
 );
 
 create index if not exists contributions_invested_at_idx on contributions (invested_at desc);
+create index if not exists contributions_user_id_idx on contributions(user_id);
 
 alter table contributions enable row level security;
 
 create policy "owner can do everything" on contributions
   for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);

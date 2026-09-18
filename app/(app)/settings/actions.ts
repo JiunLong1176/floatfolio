@@ -19,7 +19,7 @@ export async function saveSettings(data: { gold_spread_pct: number; default_curr
     value: String(value),
   }))
 
-  const { error } = await supabase.from('settings').upsert(upserts)
+  const { error } = await supabase.from('settings').upsert(upserts, { onConflict: 'user_id,key' })
   if (error) throw new Error(error.message)
 
   revalidatePath('/settings')
@@ -47,7 +47,7 @@ export async function saveCashBalances(data: {
     value: String(value),
   }))
 
-  const { error } = await supabase.from('settings').upsert(upserts)
+  const { error } = await supabase.from('settings').upsert(upserts, { onConflict: 'user_id,key' })
   if (error) throw new Error(error.message)
 
   revalidatePath('/settings')
@@ -62,8 +62,8 @@ export async function deleteAllData() {
 
   await Promise.all([
     supabase.from('holdings').delete().eq('user_id', user.id),
-    supabase.from('daily_snapshots').delete().neq('snap_date', ''),
-    supabase.from('settings').delete().neq('key', ''),
+    supabase.from('daily_snapshots').delete().eq('user_id', user.id),
+    supabase.from('settings').delete().eq('user_id', user.id),
   ])
 
   await supabase.auth.signOut()

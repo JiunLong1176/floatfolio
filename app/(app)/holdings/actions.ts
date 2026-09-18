@@ -121,7 +121,7 @@ export async function saveAllocationTargets(targets: Record<string, number>) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('settings')
-    .upsert({ key: 'allocation_targets', value: JSON.stringify(parsed.data) })
+    .upsert({ key: 'allocation_targets', value: JSON.stringify(parsed.data) }, { onConflict: 'user_id,key' })
   if (error) throw new Error(error.message)
 
   revalidatePath('/holdings')
@@ -135,7 +135,7 @@ export async function saveMonthlyContribution(amount: number) {
   const supabase = await createClient()
   const { error } = await supabase
     .from('settings')
-    .upsert({ key: 'monthly_contribution', value: String(parsed.data) })
+    .upsert({ key: 'monthly_contribution', value: String(parsed.data) }, { onConflict: 'user_id,key' })
   if (error) throw new Error(error.message)
 
   revalidatePath('/holdings')
