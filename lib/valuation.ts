@@ -135,6 +135,8 @@ export async function computePortfolio(
         cost_myr: group.reduce((s, h) => s + h.cost_basis_myr, 0),
         pnl_myr: group.reduce((s, h) => s + h.pnl_myr, 0),
         value_usd: group.reduce((s, h) => s + h.market_value_usd, 0),
+        cost_usd: group.reduce((s, h) => s + h.cost_basis_usd, 0),
+        pnl_usd: group.reduce((s, h) => s + h.pnl_usd, 0),
       }
       return acc
     },

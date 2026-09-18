@@ -4,9 +4,10 @@ import TotalsCard from '@/components/TotalsCard'
 import EquityChart from '@/components/EquityChart'
 import AssetClassCard from '@/components/AssetClassCard'
 import AllocationCard from '@/components/AllocationCard'
+import MoversList from '@/components/MoversList'
 import { Briefcase } from 'lucide-react'
 import Link from 'next/link'
-import { fmt, fmtPct, platformLabel } from '@/lib/utils'
+import { platformLabel } from '@/lib/utils'
 import type { Metadata } from 'next'
 import type { AssetClass } from '@/types'
 
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
 
   // Yesterday's value for "today's change"
   const prevValueMyr = snapshots && snapshots.length > 0 ? snapshots[0].total_value_myr : undefined
+  const prevValueUsd = snapshots && snapshots.length > 0 ? snapshots[0].total_value_usd : undefined
 
   // Sparkline data per asset class (last 15 snapshots, ascending)
   const sparkFor = (cls: 'stock' | 'gold' | 'crypto') =>
@@ -78,19 +80,10 @@ export default async function DashboardPage() {
   const topGainers = sorted.slice(0, 3).filter((h) => h.pnl_myr >= 0)
   const topLosers  = [...sorted].reverse().slice(0, 3).filter((h) => h.pnl_myr < 0)
 
-  const dotCls = (cls: AssetClass) =>
-    cls === 'stock' ? 'dot-stocks' : cls === 'gold' ? 'dot-gold' : 'dot-crypto'
-
-  const quantityLabel = (h: (typeof summary.holdings)[0]) => {
-    if (h.asset_class === 'gold')   return `${h.quantity}g`
-    if (h.asset_class === 'crypto') return `${h.quantity}`
-    return `${h.quantity} sh`
-  }
-
   return (
     <div className="space-y-10 fade-up">
       {/* ── Hero ── */}
-      <TotalsCard summary={summary} prevValueMyr={prevValueMyr} />
+      <TotalsCard summary={summary} prevValueMyr={prevValueMyr} prevValueUsd={prevValueUsd} />
 
       {/* ── Equity chart preview ── */}
       <EquityChart snapshots={snapshotsAsc} compact />
@@ -108,8 +101,11 @@ export default async function DashboardPage() {
             ? (summary.by_class.stock.pnl_myr / summary.by_class.stock.cost_myr) * 100
             : 0}
           value_usd={summary.by_class.stock.value_usd}
+          cost_usd={summary.by_class.stock.cost_usd}
+          pnl_usd={summary.by_class.stock.pnl_usd}
           sparkValues={sparkFor('stock')}
           cash_myr={summary.cash_by_platform.moomoo}
+          cash_usd={summary.cash_by_platform.moomoo / summary.fx.USD_MYR}
         />
         <AssetClassCard
           assetClass="gold"
@@ -122,8 +118,11 @@ export default async function DashboardPage() {
             ? (summary.by_class.gold.pnl_myr / summary.by_class.gold.cost_myr) * 100
             : 0}
           value_usd={summary.by_class.gold.value_usd}
+          cost_usd={summary.by_class.gold.cost_usd}
+          pnl_usd={summary.by_class.gold.pnl_usd}
           sparkValues={sparkFor('gold')}
           cash_myr={summary.cash_by_platform.tng_emas}
+          cash_usd={summary.cash_by_platform.tng_emas / summary.fx.USD_MYR}
         />
         <AssetClassCard
           assetClass="crypto"
@@ -136,60 +135,19 @@ export default async function DashboardPage() {
             ? (summary.by_class.crypto.pnl_myr / summary.by_class.crypto.cost_myr) * 100
             : 0}
           value_usd={summary.by_class.crypto.value_usd}
+          cost_usd={summary.by_class.crypto.cost_usd}
+          pnl_usd={summary.by_class.crypto.pnl_usd}
           sparkValues={sparkFor('crypto')}
           isLive
           cash_myr={summary.cash_by_platform.luno}
+          cash_usd={summary.cash_by_platform.luno / summary.fx.USD_MYR}
         />
       </section>
 
       {/* ── Movers + Allocation ── */}
       {(topGainers.length > 0 || topLosers.length > 0) && (
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Today's movers — spans 2 columns */}
-          <div className="rounded-2xl border border-border bg-surface p-6 lg:col-span-2">
-            <header className="flex items-center justify-between mb-5">
-              <h2 className="font-medium">Today&apos;s movers</h2>
-              <span className="text-xs text-fg-mute">{summary.holdings.length} holdings</span>
-            </header>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-1">
-              {/* Best */}
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.12em] mb-2 text-fg-mute">Best</div>
-                <ul className="divide-y divide-border">
-                  {topGainers.map((h) => (
-                    <li key={h.id} className="flex items-center gap-3 py-2.5">
-                      <span className={`dot ${dotCls(h.asset_class)}`} />
-                      <span className="font-medium">{h.company_name || h.symbol}</span>
-                      <span className="text-xs font-mono text-fg-mute">{quantityLabel(h)}</span>
-                      <span className="ml-auto pill pill-profit">{fmtPct(h.pnl_pct)}</span>
-                      <span className="font-mono text-xs w-20 text-right tabular profit">
-                        +{fmt(h.pnl_myr, 'MYR').replace('.00', '')}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {/* Worst */}
-              {topLosers.length > 0 && (
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.12em] mb-2 text-fg-mute">Worst</div>
-                  <ul className="divide-y divide-border">
-                    {topLosers.map((h) => (
-                      <li key={h.id} className="flex items-center gap-3 py-2.5">
-                        <span className={`dot ${dotCls(h.asset_class)}`} />
-                        <span className="font-medium">{h.company_name || h.symbol}</span>
-                        <span className="text-xs font-mono text-fg-mute">{quantityLabel(h)}</span>
-                        <span className="ml-auto pill pill-loss">{fmtPct(h.pnl_pct)}</span>
-                        <span className="font-mono text-xs w-20 text-right tabular loss">
-                          {fmt(h.pnl_myr, 'MYR').replace('.00', '')}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
+          <MoversList topGainers={topGainers} topLosers={topLosers} holdingsCount={summary.holdings.length} />
 
           {/* Allocation */}
           <AllocationCard by_class={summary.by_class} />

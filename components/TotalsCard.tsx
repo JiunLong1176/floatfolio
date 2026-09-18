@@ -9,9 +9,10 @@ import { useRouter } from 'next/navigation'
 interface TotalsCardProps {
   summary: PortfolioSummary
   prevValueMyr?: number
+  prevValueUsd?: number
 }
 
-export default function TotalsCard({ summary, prevValueMyr }: TotalsCardProps) {
+export default function TotalsCard({ summary, prevValueMyr, prevValueUsd }: TotalsCardProps) {
   const { currency } = useCurrency()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
@@ -23,9 +24,10 @@ export default function TotalsCard({ summary, prevValueMyr }: TotalsCardProps) {
   const split   = fmtSplit(value, currency)
 
   // Today's change vs yesterday's snapshot
-  const todayDelta    = prevValueMyr != null ? summary.total_value_myr - prevValueMyr : null
-  const todayDeltaPct = prevValueMyr != null && prevValueMyr > 0
-    ? ((summary.total_value_myr - prevValueMyr) / prevValueMyr) * 100
+  const prevValue = currency === 'MYR' ? prevValueMyr : prevValueUsd
+  const todayDelta    = prevValue != null ? value - prevValue : null
+  const todayDeltaPct = prevValue != null && prevValue > 0
+    ? ((value - prevValue) / prevValue) * 100
     : null
   const todayUp = todayDelta != null && todayDelta >= 0
 
@@ -61,7 +63,7 @@ export default function TotalsCard({ summary, prevValueMyr }: TotalsCardProps) {
               {todayDelta != null && todayDeltaPct != null && (
                 <div className="flex items-center gap-2">
                   <span className={`pill ${todayUp ? 'pill-profit' : 'pill-loss'}`}>
-                    {todayUp ? '+' : ''}{fmt(todayDelta, 'MYR')}
+                    {todayUp ? '+' : ''}{fmt(todayDelta, currency)}
                   </span>
                   <span className={`pill ${todayUp ? 'pill-profit' : 'pill-loss'}`}>
                     {todayUp ? '+' : ''}{todayDeltaPct.toFixed(2)}%

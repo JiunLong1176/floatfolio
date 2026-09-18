@@ -8,9 +8,9 @@ export const metadata: Metadata = { title: 'History' }
 export const dynamic = 'force-dynamic'
 
 const EMPTY_BY_CLASS: PortfolioSummary['by_class'] = {
-  stock:  { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0 },
-  gold:   { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0 },
-  crypto: { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0 },
+  stock:  { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0, cost_usd: 0, pnl_usd: 0 },
+  gold:   { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0, cost_usd: 0, pnl_usd: 0 },
+  crypto: { value_myr: 0, cost_myr: 0, pnl_myr: 0, value_usd: 0, cost_usd: 0, pnl_usd: 0 },
 }
 
 export default async function HistoryPage() {

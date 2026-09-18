@@ -65,9 +65,9 @@ export interface PortfolioSummary {
   total_cash_usd: number
   cash_by_platform: { moomoo: number; tng_emas: number; luno: number }  // all in MYR
   by_class: {
-    stock: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number }
-    gold: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number }
-    crypto: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number }
+    stock: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number; cost_usd: number; pnl_usd: number }
+    gold: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number; cost_usd: number; pnl_usd: number }
+    crypto: { value_myr: number; cost_myr: number; pnl_myr: number; value_usd: number; cost_usd: number; pnl_usd: number }
   }
   holdings: ValuatedHolding[]
   fx: FxRates

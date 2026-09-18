@@ -15,9 +15,12 @@ interface AssetClassCardProps {
   pnl_myr: number
   pnl_pct: number
   value_usd: number
+  cost_usd: number
+  pnl_usd: number
   sparkValues: number[]
   isLive?: boolean
   cash_myr?: number
+  cash_usd?: number
 }
 
 const dotClass: Record<AssetClass, string> = {
@@ -33,10 +36,13 @@ const sparkColor: Record<AssetClass, string> = {
 }
 
 export default function AssetClassCard({
-  assetClass, label, brokerLabel, value_myr, cost_myr, pnl_myr, pnl_pct, value_usd, sparkValues, isLive, cash_myr,
+  assetClass, label, brokerLabel, value_myr, cost_myr, pnl_myr, pnl_pct, value_usd, cost_usd, pnl_usd, sparkValues, isLive, cash_myr, cash_usd,
 }: AssetClassCardProps) {
   const { currency } = useCurrency()
   const value = currency === 'MYR' ? value_myr : value_usd
+  const pnl   = currency === 'MYR' ? pnl_myr   : pnl_usd
+  const cost  = currency === 'MYR' ? cost_myr  : cost_usd
+  const cash  = currency === 'MYR' ? cash_myr  : cash_usd
   const isUp = pnl_myr >= 0
   const split = fmtSplit(value, currency)
 
@@ -64,7 +70,7 @@ export default function AssetClassCard({
 
       <div className="flex items-center gap-2 mt-2">
         <span className={`pill ${isUp ? 'pill-profit' : 'pill-loss'}`}>
-          {isUp ? '+' : ''}{fmt(pnl_myr, 'MYR')}
+          {isUp ? '+' : ''}{fmt(pnl, currency)}
         </span>
         <span className={`pill ${isUp ? 'pill-profit' : 'pill-loss'}`}>
           {fmtPct(pnl_pct)}
@@ -72,9 +78,9 @@ export default function AssetClassCard({
       </div>
 
       <div className="text-xs text-fg-mute mt-2">
-        Cost <span className="font-mono">{fmt(cost_myr, 'MYR').replace('.00', '')}</span>
+        Cost <span className="font-mono">{fmt(cost, currency).replace('.00', '')}</span>
         {cash_myr != null && cash_myr > 0 && (
-          <span className="ml-2">· Cash <span className="font-mono">{fmt(cash_myr, 'MYR').replace('.00', '')}</span></span>
+          <span className="ml-2">· Cash <span className="font-mono">{fmt(cash ?? 0, currency).replace('.00', '')}</span></span>
         )}
       </div>
 
