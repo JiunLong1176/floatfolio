@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { fmt, fmtPct, cn } from '@/lib/utils'
 import { saveAllocationTargets, saveMonthlyContribution } from '@/app/(app)/holdings/actions'
+import { useCurrency } from '@/contexts/currency'
 import type { ValuatedHolding, AssetClass } from '@/types'
 
 // Legacy localStorage keys — only read once, as a one-time migration into Supabase.
@@ -46,6 +47,8 @@ interface Props {
 }
 
 export default function AllocationSection({ holdings, initialTargets, initialContribution }: Props) {
+  const { currency } = useCurrency()
+  const valueOf = (h: ValuatedHolding) => currency === 'MYR' ? h.market_value_myr : h.market_value_usd
   const [targets, setTargets] = useState<Record<string, number>>(initialTargets ?? {})
   const [contribution, setContribution] = useState(initialContribution ?? DEFAULT_CONTRIBUTION)
   const targetsSaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -97,39 +100,39 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
 
   const targetPctFor = (h: ValuatedHolding) => targets[h.id] ?? 0
 
-  const totalValueMyr = holdings.reduce((s, h) => s + h.market_value_myr, 0)
+  const totalValue = holdings.reduce((s, h) => s + valueOf(h), 0)
   const targetSum = Math.round(holdings.reduce((s, h) => s + targetPctFor(h), 0) * 100) / 100
 
   const rows = holdings.map((h) => {
     const targetPct = targetPctFor(h)
-    const currentPct = totalValueMyr > 0 ? (h.market_value_myr / totalValueMyr) * 100 : 0
+    const currentPct = totalValue > 0 ? (valueOf(h) / totalValue) * 100 : 0
     const drift = currentPct - targetPct
-    const driftValueMyr = (targetPct / 100) * totalValueMyr - h.market_value_myr
-    return { holding: h, targetPct, currentPct, drift, driftValueMyr }
+    const driftValue = (targetPct / 100) * totalValue - valueOf(h)
+    return { holding: h, targetPct, currentPct, drift, driftValue }
   })
 
   const maxDrift = Math.max(20, ...rows.map((r) => Math.abs(r.drift)))
 
   // Monthly contribution allocator — cash-flow rebalancing, buy-only
-  const newTotalMyr = totalValueMyr + contribution
+  const newTotal = totalValue + contribution
   const gaps = holdings
-    .map((h) => ({ holding: h, gapMyr: (targetPctFor(h) / 100) * newTotalMyr - h.market_value_myr }))
-    .filter((g) => g.gapMyr > 0)
-  const sumPositiveGaps = gaps.reduce((s, g) => s + g.gapMyr, 0)
+    .map((h) => ({ holding: h, gap: (targetPctFor(h) / 100) * newTotal - valueOf(h) }))
+    .filter((g) => g.gap > 0)
+  const sumPositiveGaps = gaps.reduce((s, g) => s + g.gap, 0)
 
   const allocations = sumPositiveGaps > 0
     ? (() => {
         const raw = gaps.map((g) => ({
           holding: g.holding,
-          amountMyr: Math.round(contribution * (g.gapMyr / sumPositiveGaps) * 100) / 100,
+          amount: Math.round(contribution * (g.gap / sumPositiveGaps) * 100) / 100,
         }))
-        const allocatedSum = raw.reduce((s, r) => s + r.amountMyr, 0)
+        const allocatedSum = raw.reduce((s, r) => s + r.amount, 0)
         const remainder = Math.round((contribution - allocatedSum) * 100) / 100
         if (remainder !== 0 && raw.length > 0) {
-          const largest = raw.reduce((a, b) => (b.amountMyr > a.amountMyr ? b : a))
-          largest.amountMyr = Math.round((largest.amountMyr + remainder) * 100) / 100
+          const largest = raw.reduce((a, b) => (b.amount > a.amount ? b : a))
+          largest.amount = Math.round((largest.amount + remainder) * 100) / 100
         }
-        return raw.sort((a, b) => b.amountMyr - a.amountMyr)
+        return raw.sort((a, b) => b.amount - a.amount)
       })()
     : []
 
@@ -140,7 +143,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
         <header className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <h2 className="font-medium">Current vs target</h2>
-            <p className="text-xs text-fg-mute mt-0.5">{holdings.length} holdings · {fmt(totalValueMyr, 'MYR')} total</p>
+            <p className="text-xs text-fg-mute mt-0.5">{holdings.length} holdings · {fmt(totalValue, currency)} total</p>
           </div>
           {targetSum !== 100 && (
             <span className="text-xs px-3 py-1.5 rounded-lg bg-[rgba(245,158,11,0.12)] text-[#fbbf24]">
@@ -151,7 +154,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
         </header>
 
         <ul className="divide-y divide-border">
-          {rows.map(({ holding, targetPct, currentPct, drift, driftValueMyr }) => (
+          {rows.map(({ holding, targetPct, currentPct, drift, driftValue }) => (
             <li key={holding.id} className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4 py-3.5 first:pt-0 last:pb-0">
               <div className="flex items-center gap-2 sm:w-28 shrink-0">
                 <span className={`dot ${dotClass(holding.asset_class)}`} />
@@ -179,7 +182,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
                   <span className="text-fg-mute">%</span>
                 </div>
                 <span className={cn('font-mono tabular w-24 text-right', drift > 0 ? 'text-loss' : drift < 0 ? 'text-primary' : 'text-fg-mute')}>
-                  {drift === 0 ? 'on target' : `${fmtPct(drift)} (${fmt(Math.abs(driftValueMyr), 'MYR')})`}
+                  {drift === 0 ? 'on target' : `${fmtPct(drift)} (${fmt(Math.abs(driftValue), currency)})`}
                 </span>
               </div>
             </li>
@@ -195,7 +198,7 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
             <p className="text-xs text-fg-mute mt-0.5">Buy-only rebalancing — new cash tops up underweight holdings, nothing is sold.</p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-fg-mute">RM</span>
+            <span className="text-sm text-fg-mute">{currency === 'MYR' ? 'RM' : '$'}</span>
             <input
               type="number"
               min={0}
@@ -214,11 +217,11 @@ export default function AllocationSection({ holdings, initialTargets, initialCon
           <div>
             <p className="text-xs text-fg-mute mb-3">This month, invest:</p>
             <ul className="flex flex-wrap gap-2">
-              {allocations.map(({ holding, amountMyr }) => (
+              {allocations.map(({ holding, amount }) => (
                 <li key={holding.id} className="inline-flex items-center gap-2 px-3 py-2 rounded-[10px] bg-surface-2 border border-border text-sm">
                   <span className={`dot ${dotClass(holding.asset_class)}`} />
                   <span className="font-medium">{holding.company_name || holding.symbol}</span>
-                  <span className="font-mono tabular text-fg-dim">{fmt(amountMyr, 'MYR')}</span>
+                  <span className="font-mono tabular text-fg-dim">{fmt(amount, currency)}</span>
                 </li>
               ))}
             </ul>
